@@ -1,4 +1,4 @@
-package com.amaizzzing.amaizingnotes.ui.home
+package com.amaizzzing.amaizingnotes.view.fragments.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

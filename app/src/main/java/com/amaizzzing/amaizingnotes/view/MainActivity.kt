@@ -1,21 +1,14 @@
 package com.amaizzzing.amaizingnotes.view
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.RecyclerView
+import com.amaizzzing.amaizingnotes.NotesApplication
 import com.amaizzzing.amaizingnotes.R
-import com.amaizzzing.amaizingnotes.adapters.TodayNotesAdapter
-import com.amaizzzing.amaizingnotes.models.entities.Note
-import com.amaizzzing.amaizingnotes.viewmodel.TodayNotesViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_home.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +17,37 @@ class MainActivity : AppCompatActivity() {
 
         configNavController()
 
+        /*GlobalScope.launch { insertions() }*/
+
+
+
+        /*Completable.fromAction {
+            noteDao?.insertNote(ApiNote(1,333333L,333333L,333333L,"my"))
+            noteDao?.insertNote(ApiNote(2,333333L,333333L,333333L,"my"))
+            noteDao?.insertNote(ApiNote(3,333333L,333333L,333333L,"my"))
+            noteDao?.insertNote(ApiNote(4,333333L,333333L,333333L,"my"))
+            noteDao?.insertNote(ApiNote(5,333333L,333333L,333333L,"my"))
+            noteDao?.insertNote(ApiNote(6,333333L,333333L,333333L,"my"))
+            noteDao?.insertNote(ApiNote(7,333333L,333333L,333333L,"my"))}
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()*/
     }
+
+    /*suspend fun insertions(){
+        val noteDao : NoteDao? = NotesApplication.instance.getAppDataBase(this)?.noteDao()
+        with(CoroutineScope(SupervisorJob() + Dispatchers.IO)){
+            launch{
+                noteDao?.insertNote(ApiNote(11,333333L,333333L,333333L,"11"))
+                noteDao?.insertNote(ApiNote(12,333333L,333333L,333333L,"12"))
+                noteDao?.insertNote(ApiNote(13,333333L,333333L,333333L,"13"))
+                noteDao?.insertNote(ApiNote(14,333333L,333333L,333333L,"14"))
+                noteDao?.insertNote(ApiNote(15,333333L,333333L,333333L,"15"))
+                noteDao?.insertNote(ApiNote(16,333333L,333333L,333333L,"16"))
+                noteDao?.insertNote(ApiNote(17,333333L,333333L,333333L,"17"))
+            }.join()
+        }
+    }*/
 
     fun configNavController() {
         val navView = nav_view
@@ -36,7 +59,15 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_notifications
             )
         )
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        //setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
+
+    override fun onDestroy() {
+        NotesApplication.instance.getAppDataBase(this)?.close()
+        NotesApplication.instance.destroyDataBase()
+
+        super.onDestroy()
+    }
 }
+

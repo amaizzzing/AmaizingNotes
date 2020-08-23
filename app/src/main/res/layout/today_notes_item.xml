@@ -17,16 +17,37 @@
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/text_today_notes_item"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-        <TextView
-            android:id="@+id/text_today_notes_item"
+            app:layout_constraintEnd_toStartOf="@+id/ll_name_text_today_notes_item"
+            app:layout_constraintTop_toTopOf="@+id/ll_name_text_today_notes_item"
+            app:layout_constraintBottom_toBottomOf="@+id/ll_name_text_today_notes_item"/>
+        <LinearLayout
+            android:id="@+id/ll_name_text_today_notes_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             app:layout_constraintStart_toEndOf="@+id/time_today_notes_item"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/img_menu_today_notes_item"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent">
+            <TextView
+                android:id="@+id/name_today_notes_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/text_today_notes_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"/>
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/img_menu_today_notes_item"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_menu_item_notes_24"
+            app:layout_constraintStart_toEndOf="@+id/ll_name_text_today_notes_item"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ll_name_text_today_notes_item"
+            app:layout_constraintBottom_toBottomOf="@+id/ll_name_text_today_notes_item"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

@@ -1,4 +1,4 @@
-package com.amaizzzing.amaizingnotes.ui.notifications
+package com.amaizzzing.amaizingnotes.view.fragments.notifications
 
 import android.os.Bundle
 import android.view.LayoutInflater

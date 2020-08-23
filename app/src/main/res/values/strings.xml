@@ -3,4 +3,10 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="title_calendar">Календарь</string>
+    <string name="title_today">Сегодня</string>
+    <string name="title_settings">Настройки</string>
+    <string name="current_note">current_note</string>
+    <string name="delete">Удалить</string>
 </resources>

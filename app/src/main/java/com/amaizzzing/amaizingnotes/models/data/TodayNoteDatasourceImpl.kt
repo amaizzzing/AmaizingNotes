@@ -1,16 +1,15 @@
 package com.amaizzzing.amaizingnotes.models.data
 
+import androidx.lifecycle.LiveData
+import com.amaizzzing.amaizingnotes.NotesApplication
+import com.amaizzzing.amaizingnotes.models.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.models.entities.Note
 import io.reactivex.Observable
 
 class TodayNoteDatasourceImpl : TodayNoteDatasource {
-    override fun getTodayNote(): Observable<List<Note>> =
-        Observable.fromArray(listOf(
-        Note(0,111111,"olololo"),
-        Note(1,111111,"olololo"),
-        Note(2,111111,"olololo"),
-        Note(3,111111,"olololo"),
-        Note(4,111111,"olololo")
-    ))
+    override fun getTodayNote(startDay:Long,endDay:Long): LiveData<MutableList<ApiNote>>? =
+        NotesApplication.instance.getAppDataBase()?.noteDao()?.getTodayNotes(startDay, endDay)/*Observable<List<Note>> =*/
+
+    override fun getNoteById(id1: Long): ApiNote? = NotesApplication.instance.getAppDataBase()?.noteDao()?.getNoteById(id1)
 
 }

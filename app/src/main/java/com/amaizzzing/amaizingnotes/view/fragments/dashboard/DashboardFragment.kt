@@ -1,4 +1,4 @@
-package com.amaizzzing.amaizingnotes.ui.dashboard
+package com.amaizzzing.amaizingnotes.view.fragments.dashboard
 
 import android.os.Bundle
 import android.view.LayoutInflater
