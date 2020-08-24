@@ -3,6 +3,7 @@ package com.amaizzzing.amaizingnotes.view.fragments.add_note
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.amaizzzing.amaizingnotes.NotesApplication
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.models.api_model.ApiNote
-import com.amaizzzing.amaizingnotes.models.mappers.NoteMapper
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
@@ -37,7 +37,7 @@ class AddNoteFragment : Fragment() {
     var minutes = calendarDateTime.get(Calendar.MINUTE)
     var seconds = calendarDateTime.get(Calendar.SECOND)
 
-    var idFromHomeFragment : Long? =-1L
+    var idFromHomeFragment: Long? = -1L
 
     companion object {
         fun newInstance() = AddNoteFragment()
@@ -58,37 +58,37 @@ class AddNoteFragment : Fragment() {
         initViews(root)
         initListeners()
 
-        idFromHomeFragment  = arguments?.getLong(getString(R.string.current_note))
-        if (idFromHomeFragment == -1L ) {
+        idFromHomeFragment = arguments?.getLong(getString(R.string.current_note))
+        initAndShowViews()
+
+        return root
+    }
+
+    fun initAndShowViews() {
+        if (idFromHomeFragment == -1L) {
             dateTextViewAddNoteFragment.text =
                 SimpleDateFormat("dd.MM.yyyy").format(calendarDateTime.time.time)
             timeTextViewAddNoteFragment.text =
                 SimpleDateFormat("HH:mm").format(calendarDateTime.time.time)
         } else {
-            with(CoroutineScope(SupervisorJob() + Dispatchers.IO)) {
-                launch {
-                    withContext(Dispatchers.IO){
-                        val noteFromDb =  viewModel.getChosenNote(idFromHomeFragment!!)
-                        withContext(Dispatchers.Main){
-                            dateTextViewAddNoteFragment.text = noteFromDb.date.split(" ")[0]
-                            timeTextViewAddNoteFragment.text = noteFromDb.date.split(" ")[1]
-                            etNameNoteAddNoteFragment.setText(noteFromDb.nameNote)
-                            etTextNoteAddNoteFragment.setText(noteFromDb.text)
-                        }
+            showViewsWithNote()
+        }
+    }
+
+    private fun showViewsWithNote() {
+        with(CoroutineScope(SupervisorJob() + Dispatchers.IO)) {
+            launch {
+                withContext(Dispatchers.IO) {
+                    val noteFromDb = viewModel.getChosenNote(idFromHomeFragment!!)
+                    withContext(Dispatchers.Main) {
+                        dateTextViewAddNoteFragment.text = noteFromDb.date.split(" ")[0]
+                        timeTextViewAddNoteFragment.text = noteFromDb.date.split(" ")[1]
+                        etNameNoteAddNoteFragment.setText(noteFromDb.nameNote)
+                        etTextNoteAddNoteFragment.setText(noteFromDb.text)
                     }
                 }
             }
-
-
-            /*viewModel.getNoteFromDB(idFromHomeFragment!!)?.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                dateTextViewAddNoteFragment.text = it.date.split(" ")[0]
-                timeTextViewAddNoteFragment.text = it.date.split(" ")[1]
-                etNameNoteAddNoteFragment.setText(it.nameNote)
-                etTextNoteAddNoteFragment.setText(it.text)
-            })*/
         }
-
-        return root
     }
 
     fun initViews(v: View) {
@@ -103,20 +103,21 @@ class AddNoteFragment : Fragment() {
     fun initListeners() {
         btnOkAddNoteFragment.setOnClickListener {
             val noteDao = NotesApplication.instance.getAppNoteDao()
-            val tmpApiNote=ApiNote(
+            val tmpApiNote = ApiNote(
                 id = 0,
                 date = calendarDateTime.time.time,
                 nameNote = etNameNoteAddNoteFragment.text.toString(),
                 text = etTextNoteAddNoteFragment.text.toString()
             )
-            if(idFromHomeFragment == -1L){
+            Log.e("MyDB","insert = ${tmpApiNote.date}")
+            if (idFromHomeFragment == -1L) {
                 with(CoroutineScope(SupervisorJob() + Dispatchers.IO)) {
                     launch {
                         noteDao?.insertNote(tmpApiNote)
                         findNavController().popBackStack()
                     }
                 }
-            }else{
+            } else {
                 tmpApiNote.id = idFromHomeFragment!!
                 with(CoroutineScope(SupervisorJob() + Dispatchers.IO)) {
                     launch {

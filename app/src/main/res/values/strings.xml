@@ -9,4 +9,5 @@
     <string name="title_settings">Настройки</string>
     <string name="current_note">current_note</string>
     <string name="delete">Удалить</string>
+    <string name="not_finish">Не выполненные</string>
 </resources>

@@ -9,4 +9,5 @@ interface TodayNoteDatasource {
     fun getTodayNote(startDay:Long,endDay:Long) :/*Observable<List<Note>>*/LiveData<MutableList<ApiNote>>?
 
     fun getNoteById(id1:Long) : ApiNote?
+
 }

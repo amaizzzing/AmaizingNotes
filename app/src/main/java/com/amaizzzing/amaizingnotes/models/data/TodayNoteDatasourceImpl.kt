@@ -12,4 +12,5 @@ class TodayNoteDatasourceImpl : TodayNoteDatasource {
 
     override fun getNoteById(id1: Long): ApiNote? = NotesApplication.instance.getAppDataBase()?.noteDao()?.getNoteById(id1)
 
+
 }

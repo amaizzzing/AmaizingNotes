@@ -10,4 +10,5 @@ interface TodayNotesInteractor {
     fun getTodayNotes(startDay:Long,endDay:Long) : /*Observable<List<Note>>*/LiveData<MutableList<ApiNote>>?
 
     fun getNoteById(id1:Long) : ApiNote?
+
 }

@@ -9,6 +9,8 @@ import io.reactivex.Observable
 class TodayNoteRepositoryImpl(val todayNoteDatasource: TodayNoteDatasource) : TodayNoteRepository {
     override fun getTodayNote(startDay:Long,endDay:Long): LiveData<MutableList<ApiNote>>? =
         todayNoteDatasource.getTodayNote(startDay, endDay)
+
     override fun getNoteById(id1: Long): ApiNote? =
         todayNoteDatasource.getNoteById(id1)
+
 }
