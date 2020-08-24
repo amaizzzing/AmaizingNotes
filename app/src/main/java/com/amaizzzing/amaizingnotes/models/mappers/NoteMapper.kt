@@ -11,7 +11,7 @@ class NoteMapper{
         fun apiNoteToNote(apiNote: ApiNote) : Note =
             Note(
                 apiNote.id,
-                SimpleDateFormat("dd.MM.yyyy HH:mm").format(apiNote.date),
+                SimpleDateFormat("dd.MM.yy HH:mm").format(apiNote.date),
                 apiNote.dateStart,
                 apiNote.dateEnd,
                 apiNote.nameNote,
@@ -21,7 +21,7 @@ class NoteMapper{
         fun noteToApiNote(note:Note) : ApiNote =
             ApiNote(
                 note.id,
-                SimpleDateFormat("dd.MM.yyyy HH:mm").parse(note.date).time,
+                SimpleDateFormat("dd.MM.yy HH:mm").parse(note.date).time,
                 note.dateStart,
                 note.dateEnd,
                 note.nameNote,

@@ -6,7 +6,7 @@ class DateFunctions {
     companion object{
         fun getStartDay(currentDay:Long):Long{
             val calendar = Calendar.getInstance()
-            calendar.time.time = currentDay
+            calendar.time = Date(currentDay)
             calendar.set(Calendar.HOUR_OF_DAY, 0)
             calendar.set(Calendar.MINUTE, 0)
             calendar.set(Calendar.SECOND, 0)
@@ -16,7 +16,7 @@ class DateFunctions {
         }
         fun getEndDay(currentDay:Long):Long{
             val calendar = Calendar.getInstance()
-            calendar.time.time = currentDay
+            calendar.time = Date(currentDay)
             calendar.set(Calendar.HOUR_OF_DAY, 23)
             calendar.set(Calendar.MINUTE, 59)
             calendar.set(Calendar.SECOND, 59)

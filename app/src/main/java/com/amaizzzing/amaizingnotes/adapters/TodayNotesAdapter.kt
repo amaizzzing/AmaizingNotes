@@ -27,7 +27,7 @@ class TodayNotesAdapter(var items:List<Note>,val callback: Callback) : RecyclerV
         private val imgMenuTodayNotesItem = itemView.findViewById<ImageView>(R.id.img_menu_today_notes_item)
 
         fun bind(item:Note){
-            timeTodayNotesItem.text = item.date.split(" ")[1]
+            timeTodayNotesItem.text = item.date
             nameTodayNotesItem.text = item.nameNote
             textTodayNotesItem.text = item.text
 

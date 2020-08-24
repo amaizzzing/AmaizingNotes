@@ -12,24 +12,38 @@ import com.amaizzzing.amaizingnotes.utils.DateFunctions
 import java.util.*
 
 class CalendarViewModel : ViewModel() {
-    fun getMyRange7Days() : LiveData<MutableList<Note>>? {
-        Log.e("MyDB","${DateFunctions.getStartDay(Calendar.getInstance().time.time)} ${DateFunctions.getEndDay(Calendar.getInstance().time.time + 673199000L)}")
-        return NotesApplication.instance.getMyTodayNoteInteractor().getTodayNotes(
-            DateFunctions.getStartDay(
-                Calendar.getInstance().time.time
-            ),
-            DateFunctions.getEndDay(
-                Calendar.getInstance().time.time + 673199000L
-            )
+    var someDaysLiveData:MutableLiveData<MutableList<Note>>? = null
+
+
+    /*fun getMyRange7Days() {
+        someDaysLiveData=getSomeDays(Calendar.getInstance().time.time, Calendar.getInstance().time.time + 670211000L)
+
+    }*/
+
+
+    fun getMyRangeDays(range:Long) : LiveData<MutableList<Note>>? = getSomeDays(Calendar.getInstance().time.time,Calendar.getInstance().time.time + range)
+        /*val mln = getSomeDays(
+            Calendar.getInstance().time.time,
+            Calendar.getInstance().time.time + 1340422000L
+        )?.value
+        someDaysLiveData?.value = mln*/
+
+
+    /*fun getMyRange30Days(){
+        someDaysLiveData = getSomeDays(
+            Calendar.getInstance().time.time,
+            Calendar.getInstance().time.time + 2872332857L
+        )
+    }*/
+
+    fun getSomeDays(start:Long,end:Long) : LiveData<MutableList<Note>>? =
+        NotesApplication.instance.getMyTodayNoteInteractor().getTodayNotes(
+            DateFunctions.getStartDay(start),
+            DateFunctions.getEndDay(end)
         )?.let {
             Transformations.map(
                 it,
                 { NoteMapper.listApiNoteToListNote(it) }
             )
         }
-    }
-
-    /*fun getMyRange14Days() : LiveData<MutableList<Note>>? = range14Days
-
-    fun getMyRange30Days(): LiveData<MutableList<Note>>? = range30days*/
 }
