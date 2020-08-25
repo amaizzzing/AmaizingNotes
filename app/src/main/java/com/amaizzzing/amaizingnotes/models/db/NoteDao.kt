@@ -12,12 +12,12 @@ interface NoteDao {
     suspend fun insertNote(note: ApiNote) : Long
 
     @Update
-    suspend fun updateNode(note:ApiNote)
+    fun updateNote(note:ApiNote)
 
     @Delete
-    suspend fun deleteNode(note:ApiNote)
+    fun deleteNote(note:ApiNote)
 
-    @Query("select * from api_note where date between :startDay and :endDay order by date desc")
+    @Query("select * from api_note where date between :startDay and :endDay order by isDone,date desc")
     fun getTodayNotes(startDay:Long,endDay:Long) : LiveData<MutableList<ApiNote>>
 
     @Query("select * from api_note where id=:id1")

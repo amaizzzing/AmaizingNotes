@@ -13,4 +13,8 @@ class TodayNoteRepositoryImpl(val todayNoteDatasource: TodayNoteDatasource) : To
     override fun getNoteById(id1: Long): ApiNote? =
         todayNoteDatasource.getNoteById(id1)
 
+    override fun updateNote(apiNote: ApiNote) {
+        todayNoteDatasource.updateNote(apiNote)
+    }
+
 }

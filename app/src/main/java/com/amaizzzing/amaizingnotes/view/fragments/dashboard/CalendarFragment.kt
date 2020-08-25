@@ -1,5 +1,6 @@
 package com.amaizzzing.amaizingnotes.view.fragments.dashboard
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +23,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.util.*
 
 class CalendarFragment : Fragment() {
     lateinit var cvCalenRangeFragmentCalendar: CardView
@@ -43,20 +43,40 @@ class CalendarFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_calendar, container, false)
+
         initViews(root)
+        initListeners()
 
         previousRange=670211000L
         calendarViewModel = ViewModelProvider(this).get(CalendarViewModel::class.java)
         calendarViewModel.getMyRangeDays(670211000L)?.observe(viewLifecycleOwner, Observer {
             initRecyclerView(it)
         })
-
         return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         navController = findNavController()
+    }
+
+    fun initListeners(){
+        cv7dayRangeFragmentCalendar.setOnClickListener {
+            cv7dayRangeFragmentCalendar.setCardBackgroundColor(R.color.transPrimary)
+            calendarViewModel.getMyRangeDays(670211000L)?.observe(viewLifecycleOwner, Observer {
+                initRecyclerView(it)
+            })
+        }
+        cv14dayRangeFragmentCalendar.setOnClickListener {
+            calendarViewModel.getMyRangeDays(1340422000L)?.observe(viewLifecycleOwner, Observer {
+                initRecyclerView(it)
+            })
+        }
+        cvMonthRangeFragmentCalendar.setOnClickListener {
+            calendarViewModel.getMyRangeDays(2872332857L)?.observe(viewLifecycleOwner, Observer {
+                initRecyclerView(it)
+            })
+        }
     }
 
     private fun initViews(v: View) {
@@ -69,8 +89,7 @@ class CalendarFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        calendarViewModel.getMyRangeDays(previousRange)?.removeObservers(this)
-        calendarViewModel.getMyRangeDays(0L)?.observe(viewLifecycleOwner, Observer {
+        calendarViewModel.getMyRangeDays(670211000L)?.observe(viewLifecycleOwner, Observer {
             initRecyclerView(it)
         })
     }
@@ -80,14 +99,23 @@ class CalendarFragment : Fragment() {
             override fun onItemClicked(item: Note) {
                 val bundle = Bundle()
                 bundle.putLong(getString(R.string.current_note), item.id)
-                navController.navigate(R.id.action_navigation_home_to_navigation_add_notes, bundle)
+                navController.navigate(R.id.action_navigation_calendar_to_navigation_add_notes, bundle)
             }
 
             override fun onDeleteClicked(item: Note) {
                 val noteDao = NotesApplication.instance.getAppNoteDao()
                 with(CoroutineScope(SupervisorJob() + Dispatchers.IO)) {
                     launch {
-                        noteDao?.deleteNode(NoteMapper.noteToApiNote(item))
+                        noteDao?.deleteNote(NoteMapper.noteToApiNote(item))
+                    }
+                }
+            }
+
+            override fun onChcbxChecked(item: Note) {
+                item.isDone = !item.isDone
+                with(CoroutineScope(SupervisorJob() + Dispatchers.IO)){
+                    launch {
+                        calendarViewModel.updateNote(item)
                     }
                 }
             }

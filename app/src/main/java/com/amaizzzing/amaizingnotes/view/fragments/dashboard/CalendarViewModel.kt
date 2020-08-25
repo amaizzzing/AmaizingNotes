@@ -13,7 +13,7 @@ import java.util.*
 
 class CalendarViewModel : ViewModel() {
     var someDaysLiveData:MutableLiveData<MutableList<Note>>? = null
-
+    private val interactor = NotesApplication.instance.getMyTodayNoteInteractor()
 
     /*fun getMyRange7Days() {
         someDaysLiveData=getSomeDays(Calendar.getInstance().time.time, Calendar.getInstance().time.time + 670211000L)
@@ -46,4 +46,8 @@ class CalendarViewModel : ViewModel() {
                 { NoteMapper.listApiNoteToListNote(it) }
             )
         }
+
+    fun updateNote(note:Note){
+        interactor.updateNote(NoteMapper.noteToApiNote(note))
+    }
 }

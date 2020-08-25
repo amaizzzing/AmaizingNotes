@@ -12,6 +12,7 @@ data class ApiNote(
     val dateStart:Long = 0,
     val dateEnd:Long = 0,
     val nameNote:String = "Название задачи",
-    val text:String = "Текст задачи"
+    val text:String = "Текст задачи",
+    var isDone:Boolean = false
 ) {
 }

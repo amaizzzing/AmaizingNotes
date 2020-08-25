@@ -121,7 +121,7 @@ class AddNoteFragment : Fragment() {
                 tmpApiNote.id = idFromHomeFragment!!
                 with(CoroutineScope(SupervisorJob() + Dispatchers.IO)) {
                     launch {
-                        noteDao?.updateNode(tmpApiNote)
+                        noteDao?.updateNote(tmpApiNote)
                         findNavController().popBackStack()
                     }
                 }

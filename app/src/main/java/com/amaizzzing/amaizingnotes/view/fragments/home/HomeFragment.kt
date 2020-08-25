@@ -89,7 +89,16 @@ class HomeFragment : Fragment() {
                 val noteDao = NotesApplication.instance.getAppNoteDao()
                 with(CoroutineScope(SupervisorJob() + Dispatchers.IO)) {
                     launch {
-                        noteDao?.deleteNode(NoteMapper.noteToApiNote(item))
+                        noteDao?.deleteNote(NoteMapper.noteToApiNote(item))
+                    }
+                }
+            }
+
+            override fun onChcbxChecked(item: Note) {
+                item.isDone = !item.isDone
+                with(CoroutineScope(SupervisorJob() + Dispatchers.IO)){
+                    launch {
+                        todayNotesViewModel.updateNote(item)
                     }
                 }
             }

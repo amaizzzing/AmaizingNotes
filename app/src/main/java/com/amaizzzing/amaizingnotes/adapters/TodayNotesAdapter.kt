@@ -9,6 +9,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.models.entities.Note
+import kotlinx.android.synthetic.main.today_notes_item.view.*
 
 class TodayNotesAdapter(var items:List<Note>,val callback: Callback) : RecyclerView.Adapter<TodayNotesAdapter.NotesViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesViewHolder =
@@ -25,11 +26,13 @@ class TodayNotesAdapter(var items:List<Note>,val callback: Callback) : RecyclerV
         private val textTodayNotesItem = itemView.findViewById<TextView>(R.id.text_today_notes_item)
         private val nameTodayNotesItem = itemView.findViewById<TextView>(R.id.name_today_notes_item)
         private val imgMenuTodayNotesItem = itemView.findViewById<ImageView>(R.id.img_menu_today_notes_item)
+        private val chkbxTodayNotesItem = itemView.chkbx_today_notes_item
 
         fun bind(item:Note){
             timeTodayNotesItem.text = item.date
             nameTodayNotesItem.text = item.nameNote
             textTodayNotesItem.text = item.text
+            chkbxTodayNotesItem.isChecked = item.isDone
 
             textTodayNotesItem.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) callback.onItemClicked(items[adapterPosition])
@@ -50,10 +53,12 @@ class TodayNotesAdapter(var items:List<Note>,val callback: Callback) : RecyclerV
                 pop.show()
                 true
             }
+            chkbxTodayNotesItem.setOnCheckedChangeListener { buttonView, isChecked -> callback.onChcbxChecked(items[adapterPosition]) }
         }
     }
     interface Callback {
         fun onItemClicked(item: Note)
         fun onDeleteClicked(item: Note)
+        fun onChcbxChecked(item:Note)
     }
 }

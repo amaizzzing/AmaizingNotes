@@ -6,5 +6,7 @@ data class Note(
     val dateStart:Long,
     val dateEnd:Long,
     val nameNote:String,
-    val text:String) {
+    val text:String,
+    var isDone:Boolean
+) {
 }

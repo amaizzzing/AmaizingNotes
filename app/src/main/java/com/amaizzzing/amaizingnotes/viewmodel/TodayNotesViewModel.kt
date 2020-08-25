@@ -2,6 +2,7 @@ package com.amaizzzing.amaizingnotes.viewmodel
 
 import androidx.lifecycle.*
 import com.amaizzzing.amaizingnotes.NotesApplication
+import com.amaizzzing.amaizingnotes.models.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.models.entities.Note
 import com.amaizzzing.amaizingnotes.models.mappers.NoteMapper
 import com.amaizzzing.amaizingnotes.utils.DateFunctions
@@ -9,6 +10,7 @@ import java.util.*
 
 class TodayNotesViewModel() : ViewModel(), LifecycleObserver {
     var listTodayNotes: LiveData<MutableList<Note>>? = null
+    private val interactor = NotesApplication.instance.getMyTodayNoteInteractor()
 
     init {
         getDataFromDB()
@@ -22,7 +24,7 @@ class TodayNotesViewModel() : ViewModel(), LifecycleObserver {
     fun fetchAllData(): LiveData<MutableList<Note>>? = listTodayNotes
 
     fun getDataFromDB() {
-        listTodayNotes = NotesApplication.instance.getMyTodayNoteInteractor().getTodayNotes(DateFunctions.getStartDay(
+        listTodayNotes = interactor.getTodayNotes(DateFunctions.getStartDay(
             Calendar.getInstance().time.time),DateFunctions.getEndDay(
             Calendar.getInstance().time.time))?.let {
             Transformations.map(
@@ -30,6 +32,10 @@ class TodayNotesViewModel() : ViewModel(), LifecycleObserver {
                 { NoteMapper.listApiNoteToListNote(it) }
             )
         }
+    }
+
+    fun updateNote(note:Note){
+        interactor.updateNote(NoteMapper.noteToApiNote(note))
     }
 
 }

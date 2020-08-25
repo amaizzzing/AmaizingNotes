@@ -13,5 +13,8 @@ class TodayNotesInteractorImpl(val todayNoteRepository: TodayNoteRepository) : T
         todayNoteRepository.getTodayNote(startDay,endDay)
 
     override fun getNoteById(id1: Long): ApiNote? = todayNoteRepository.getNoteById(id1)
+    override fun updateNote(apiNote: ApiNote) {
+        todayNoteRepository.updateNote(apiNote)
+    }
 
 }

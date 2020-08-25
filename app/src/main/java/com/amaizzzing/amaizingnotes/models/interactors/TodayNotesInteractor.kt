@@ -11,4 +11,5 @@ interface TodayNotesInteractor {
 
     fun getNoteById(id1:Long) : ApiNote?
 
+    fun updateNote(apiNote:ApiNote)
 }

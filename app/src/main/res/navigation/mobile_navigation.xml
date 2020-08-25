@@ -18,12 +18,12 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_calendar"
         android:name="com.amaizzzing.amaizingnotes.view.fragments.dashboard.CalendarFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_calendar"
         tools:layout="@layout/fragment_calendar" >
         <action
-            android:id="@+id/action_navigation_dashboard_to_navigation_add_notes"
+            android:id="@+id/action_navigation_calendar_to_navigation_add_notes"
             app:destination="@id/navigation_add_notes"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"/>

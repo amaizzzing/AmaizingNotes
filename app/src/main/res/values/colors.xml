@@ -2,10 +2,11 @@
 <resources>
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccent">#F8E005</color>
     <color name="transGrey">#BFFFFFF0</color>
     <color name="black">#000000</color>
     <color name="colorWhite">#ffffff</color>
     <color name="invisible_color">#00FFFFFF</color>
     <color name="some_invisible_color">#99FFFFFF</color>
+    <color name="transPrimary">#776200EE</color>
 </resources>

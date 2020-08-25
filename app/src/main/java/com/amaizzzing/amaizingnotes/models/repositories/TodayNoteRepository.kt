@@ -11,4 +11,5 @@ interface TodayNoteRepository{
 
     fun getNoteById(id1:Long) : ApiNote?
 
+    fun updateNote(apiNote:ApiNote)
 }

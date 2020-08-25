@@ -12,11 +12,21 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:padding="18dp">
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/chkbx_today_notes_item"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/time_today_notes_item"
+            app:layout_constraintTop_toTopOf="@+id/ll_name_text_today_notes_item"
+            app:layout_constraintBottom_toBottomOf="@+id/ll_name_text_today_notes_item"/>
         <TextView
             android:id="@+id/time_today_notes_item"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintStart_toEndOf="@+id/chkbx_today_notes_item"
             app:layout_constraintEnd_toStartOf="@+id/ll_name_text_today_notes_item"
             app:layout_constraintTop_toTopOf="@+id/ll_name_text_today_notes_item"
             app:layout_constraintBottom_toBottomOf="@+id/ll_name_text_today_notes_item"/>
@@ -45,6 +55,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/ic_menu_item_notes_24"
+            android:layout_marginStart="4dp"
             app:layout_constraintStart_toEndOf="@+id/ll_name_text_today_notes_item"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/ll_name_text_today_notes_item"

@@ -15,7 +15,8 @@ class NoteMapper{
                 apiNote.dateStart,
                 apiNote.dateEnd,
                 apiNote.nameNote,
-                apiNote.text.trim()
+                apiNote.text.trim(),
+                apiNote.isDone
             )
 
         fun noteToApiNote(note:Note) : ApiNote =
@@ -25,7 +26,8 @@ class NoteMapper{
                 note.dateStart,
                 note.dateEnd,
                 note.nameNote,
-                note.text
+                note.text,
+                note.isDone
             )
 
         fun listApiNoteToListNote(listApiNote:List<ApiNote>):MutableList<Note> =
