@@ -1,6 +1,5 @@
-package com.amaizzzing.amaizingnotes.view.fragments.dashboard
+package com.amaizzzing.amaizingnotes.view.fragments.calendar
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -62,21 +61,39 @@ class CalendarFragment : Fragment() {
 
     fun initListeners(){
         cv7dayRangeFragmentCalendar.setOnClickListener {
-            cv7dayRangeFragmentCalendar.setCardBackgroundColor(R.color.transPrimary)
+            changeDaysCardsColors(cv7dayRangeFragmentCalendar)
             calendarViewModel.getMyRangeDays(670211000L)?.observe(viewLifecycleOwner, Observer {
                 initRecyclerView(it)
             })
         }
         cv14dayRangeFragmentCalendar.setOnClickListener {
+            changeDaysCardsColors(cv14dayRangeFragmentCalendar)
             calendarViewModel.getMyRangeDays(1340422000L)?.observe(viewLifecycleOwner, Observer {
                 initRecyclerView(it)
             })
         }
         cvMonthRangeFragmentCalendar.setOnClickListener {
+            changeDaysCardsColors(cvMonthRangeFragmentCalendar)
             calendarViewModel.getMyRangeDays(2872332857L)?.observe(viewLifecycleOwner, Observer {
                 initRecyclerView(it)
             })
         }
+        cvCalenRangeFragmentCalendar.setOnClickListener {
+            changeDaysCardsColors(cvCalenRangeFragmentCalendar)
+        }
+    }
+
+    fun changeDaysCardsColors(currentView:CardView){
+        currentView.setCardBackgroundColor(resources.getColor(R.color.transPrimary))
+        if(cvCalenRangeFragmentCalendar!=currentView)
+            cvCalenRangeFragmentCalendar.setCardBackgroundColor(resources.getColor(R.color.invisible_color))
+        if(cv7dayRangeFragmentCalendar!=currentView)
+            cv7dayRangeFragmentCalendar.setCardBackgroundColor(resources.getColor(R.color.invisible_color))
+        if(cv14dayRangeFragmentCalendar!=currentView)
+            cv14dayRangeFragmentCalendar.setCardBackgroundColor(resources.getColor(R.color.invisible_color))
+        if(cvMonthRangeFragmentCalendar!=currentView)
+            cvMonthRangeFragmentCalendar.setCardBackgroundColor(resources.getColor(R.color.invisible_color))
+
     }
 
     private fun initViews(v: View) {

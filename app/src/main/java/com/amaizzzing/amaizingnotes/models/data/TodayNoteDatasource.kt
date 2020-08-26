@@ -11,4 +11,6 @@ interface TodayNoteDatasource {
     fun getNoteById(id1:Long) : ApiNote?
 
     fun updateNote(apiNote:ApiNote)
+
+    fun getNotFinishNotes() : LiveData<MutableList<ApiNote>>?
 }

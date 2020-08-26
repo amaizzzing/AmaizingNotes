@@ -3,6 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_not_finish">Not_finish</string>
 
     <string name="title_calendar">Календарь</string>
     <string name="title_today">Сегодня</string>

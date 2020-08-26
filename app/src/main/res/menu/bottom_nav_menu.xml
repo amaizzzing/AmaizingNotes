@@ -12,7 +12,7 @@
         android:title="@string/title_calendar" />
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_not_finish"
         android:icon="@drawable/ic_not_finish_24"
         android:title="@string/not_finish" />
 

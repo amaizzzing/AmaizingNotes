@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.fragments.dashboard.CalendarFragment">
+    tools:context=".view.fragments.calendar.CalendarFragment">
     <LinearLayout
         android:id="@+id/ll_choose_range_fragment_calendar"
         android:layout_width="match_parent"
@@ -35,7 +35,8 @@
                 card_view:cardUseCompatPadding="true">
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="@color/some_invisible_color">
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -64,7 +65,8 @@
                 card_view:cardUseCompatPadding="true">
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="@color/some_invisible_color">
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -93,7 +95,8 @@
                 card_view:cardUseCompatPadding="true">
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="@color/some_invisible_color">
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -122,7 +125,8 @@
                 card_view:cardUseCompatPadding="true">
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="@color/some_invisible_color">
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

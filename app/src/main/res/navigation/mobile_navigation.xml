@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_calendar"
-        android:name="com.amaizzzing.amaizingnotes.view.fragments.dashboard.CalendarFragment"
+        android:name="com.amaizzzing.amaizingnotes.view.fragments.calendar.CalendarFragment"
         android:label="@string/title_calendar"
         tools:layout="@layout/fragment_calendar" >
         <action
@@ -30,10 +30,16 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.amaizzzing.amaizingnotes.view.fragments.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_not_finish"
+        android:name="com.amaizzzing.amaizingnotes.view.fragments.not_finish.NotFinishFragment"
+        android:label="@string/not_finish"
+        tools:layout="@layout/fragment_not_finish" >
+        <action
+            android:id="@+id/action_navigation_not_finish_to_navigation_add_notes"
+            app:destination="@id/navigation_add_notes"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"/>
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_add_notes"
