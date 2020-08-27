@@ -17,6 +17,7 @@ import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.adapters.TodayNotesAdapter
 import com.amaizzzing.amaizingnotes.models.entities.Note
 import com.amaizzzing.amaizingnotes.models.mappers.NoteMapper
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_calendar.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,11 +25,13 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class CalendarFragment : Fragment() {
-    lateinit var cvCalenRangeFragmentCalendar: CardView
+    lateinit var cvTodayRangeFragmentCalendar: CardView
     lateinit var cv7dayRangeFragmentCalendar: CardView
     lateinit var cv14dayRangeFragmentCalendar: CardView
     lateinit var cvMonthRangeFragmentCalendar: CardView
     lateinit var rvFragmentCalendar: RecyclerView
+    lateinit var fabButtonFragmentCalendar:FloatingActionButton
+
     lateinit var todayNotesAdapter: TodayNotesAdapter
     lateinit var navController: NavController
 
@@ -48,7 +51,7 @@ class CalendarFragment : Fragment() {
 
         previousRange=670211000L
         calendarViewModel = ViewModelProvider(this).get(CalendarViewModel::class.java)
-        calendarViewModel.getMyRangeDays(670211000L)?.observe(viewLifecycleOwner, Observer {
+        calendarViewModel.getMyRangeDays(0L)?.observe(viewLifecycleOwner, Observer {
             initRecyclerView(it)
         })
         return root
@@ -57,6 +60,11 @@ class CalendarFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         navController = findNavController()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        changeDaysCardsColors(cvTodayRangeFragmentCalendar)
     }
 
     fun initListeners(){
@@ -78,15 +86,22 @@ class CalendarFragment : Fragment() {
                 initRecyclerView(it)
             })
         }
-        cvCalenRangeFragmentCalendar.setOnClickListener {
-            changeDaysCardsColors(cvCalenRangeFragmentCalendar)
+        cvTodayRangeFragmentCalendar.setOnClickListener {
+            changeDaysCardsColors(cvTodayRangeFragmentCalendar)
+            calendarViewModel.getMyRangeDays(0L)?.observe(viewLifecycleOwner, Observer {
+                initRecyclerView(it)
+            })
+        }
+
+        fabButtonFragmentCalendar.setOnClickListener {
+            navController.navigate(R.id.action_navigation_calendar_to_navigation_add_notes)
         }
     }
 
     fun changeDaysCardsColors(currentView:CardView){
         currentView.setCardBackgroundColor(resources.getColor(R.color.transPrimary))
-        if(cvCalenRangeFragmentCalendar!=currentView)
-            cvCalenRangeFragmentCalendar.setCardBackgroundColor(resources.getColor(R.color.invisible_color))
+        if(cvTodayRangeFragmentCalendar!=currentView)
+            cvTodayRangeFragmentCalendar.setCardBackgroundColor(resources.getColor(R.color.invisible_color))
         if(cv7dayRangeFragmentCalendar!=currentView)
             cv7dayRangeFragmentCalendar.setCardBackgroundColor(resources.getColor(R.color.invisible_color))
         if(cv14dayRangeFragmentCalendar!=currentView)
@@ -97,16 +112,17 @@ class CalendarFragment : Fragment() {
     }
 
     private fun initViews(v: View) {
-        cvCalenRangeFragmentCalendar = v.cv_calen_range_fragment_calendar
+        cvTodayRangeFragmentCalendar = v.cv_today_range_fragment_calendar
         cv7dayRangeFragmentCalendar = v.cv_7day_range_fragment_calendar
         cv14dayRangeFragmentCalendar = v.cv_14day_range_fragment_calendar
         cvMonthRangeFragmentCalendar = v.cv_month_range_fragment_calendar
         rvFragmentCalendar = v.rv_fragment_calendar
+        fabButtonFragmentCalendar = v.fab_button_fragment_calendar
     }
 
     override fun onStart() {
         super.onStart()
-        calendarViewModel.getMyRangeDays(670211000L)?.observe(viewLifecycleOwner, Observer {
+        calendarViewModel.getMyRangeDays(0L)?.observe(viewLifecycleOwner, Observer {
             initRecyclerView(it)
         })
     }

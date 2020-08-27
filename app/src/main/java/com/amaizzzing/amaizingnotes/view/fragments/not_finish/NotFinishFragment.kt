@@ -62,7 +62,7 @@ class NotFinishFragment : Fragment() {
             override fun onItemClicked(item: Note) {
                 val bundle = Bundle()
                 bundle.putLong(getString(R.string.current_note), item.id)
-                navController.navigate(R.id.action_navigation_home_to_navigation_add_notes, bundle)
+                navController.navigate(R.id.action_navigation_not_finish_to_navigation_add_notes, bundle)
             }
 
             override fun onDeleteClicked(item: Note) {

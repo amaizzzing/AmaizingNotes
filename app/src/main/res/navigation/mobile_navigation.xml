@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_calendar">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.amaizzzing.amaizingnotes.view.fragments.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" >
+        android:id="@+id/navigation_notification"
+        android:name="com.amaizzzing.amaizingnotes.view.fragments.notification.NotificationFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_notification" >
         <action
-            android:id="@+id/action_navigation_home_to_navigation_add_notes"
+            android:id="@+id/action_navigation_notification_to_navigation_add_notes"
             app:destination="@id/navigation_add_notes"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim" />

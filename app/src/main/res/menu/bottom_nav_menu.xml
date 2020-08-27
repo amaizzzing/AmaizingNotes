@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_today_24"
-        android:title="@string/title_today" />
-
-    <item
         android:id="@+id/navigation_calendar"
         android:icon="@drawable/ic_calendar_24dp"
         android:title="@string/title_calendar" />
@@ -16,4 +11,8 @@
         android:icon="@drawable/ic_not_finish_24"
         android:title="@string/not_finish" />
 
+    <item
+        android:id="@+id/navigation_notification"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="@string/title_notifications" />
 </menu>
