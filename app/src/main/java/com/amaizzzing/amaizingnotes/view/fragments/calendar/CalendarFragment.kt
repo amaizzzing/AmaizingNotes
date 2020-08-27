@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amaizzzing.amaizingnotes.NotesApplication
@@ -17,6 +18,7 @@ import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.adapters.TodayNotesAdapter
 import com.amaizzzing.amaizingnotes.models.entities.Note
 import com.amaizzzing.amaizingnotes.models.mappers.NoteMapper
+import com.amaizzzing.amaizingnotes.view.MainActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_calendar.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -153,10 +155,11 @@ class CalendarFragment : Fragment() {
                 }
             }
         })
-        rvFragmentCalendar.layoutManager = LinearLayoutManager(
+        rvFragmentCalendar.layoutManager = GridLayoutManager(context,2)
+        /*rvFragmentCalendar.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.VERTICAL, false
-        )
+        )*/
         rvFragmentCalendar.adapter = todayNotesAdapter
     }
 }

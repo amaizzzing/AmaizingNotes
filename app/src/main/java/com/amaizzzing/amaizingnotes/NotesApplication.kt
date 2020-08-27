@@ -17,6 +17,8 @@ class NotesApplication : Application() {
     val todayNoteRepository:TodayNoteRepository = TodayNoteRepositoryImpl(todayNoteDataSource)
     val todayNoteInteractor:TodayNotesInteractor = TodayNotesInteractorImpl(todayNoteRepository)
 
+    var noteType=NOTE_TYPE.NOTE
+
     var appDataBase: AppDatabase? = null
     var noteDao : NoteDao? = null
 
@@ -42,6 +44,8 @@ class NotesApplication : Application() {
     fun destroyDataBase(){
         appDataBase = null
     }
+
+    enum class NOTE_TYPE{NOTE,EXERS}
 
     companion object {
         lateinit var instance : NotesApplication private set
