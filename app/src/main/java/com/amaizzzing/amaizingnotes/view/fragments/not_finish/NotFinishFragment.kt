@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amaizzzing.amaizingnotes.NotesApplication
@@ -83,8 +84,7 @@ class NotFinishFragment : Fragment() {
                 }
             }
         })
-        rvFragmentNotFinish.layoutManager = LinearLayoutManager(context,
-            LinearLayoutManager.VERTICAL,false)
+        rvFragmentNotFinish.layoutManager = GridLayoutManager(context,2)
         rvFragmentNotFinish.adapter = todayNotesAdapter
     }
 }

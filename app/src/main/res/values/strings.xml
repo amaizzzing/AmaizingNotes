@@ -11,4 +11,8 @@
     <string name="current_note">current_note</string>
     <string name="delete">Удалить</string>
     <string name="not_finish">Не выполненные</string>
+
+    <string name="id_notifications_channel">com.amaizzzing.amaizingnotes.notes</string>
+    <string name="name_notifications_channel">NotesToStart</string>
+    <string name="description_notifications_channel">Notes to start today</string>
 </resources>

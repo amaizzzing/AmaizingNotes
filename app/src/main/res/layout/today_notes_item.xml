@@ -17,38 +17,38 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="4dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/time_today_notes_item"
-            app:layout_constraintTop_toTopOf="@+id/ll_name_text_today_notes_item"
-            app:layout_constraintBottom_toBottomOf="@+id/ll_name_text_today_notes_item"/>
+            android:layout_marginBottom="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
         <TextView
             android:id="@+id/time_today_notes_item"
-            android:layout_width="60dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
-            app:layout_constraintStart_toEndOf="@+id/chkbx_today_notes_item"
-            app:layout_constraintEnd_toStartOf="@+id/ll_name_text_today_notes_item"
-            app:layout_constraintTop_toTopOf="@+id/ll_name_text_today_notes_item"
-            app:layout_constraintBottom_toBottomOf="@+id/ll_name_text_today_notes_item"/>
+            android:layout_marginBottom="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
         <LinearLayout
             android:id="@+id/ll_name_text_today_notes_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintStart_toEndOf="@+id/time_today_notes_item"
-            app:layout_constraintEnd_toStartOf="@+id/img_menu_today_notes_item"
+            android:layout_marginBottom="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toTopOf="@+id/time_today_notes_item">
             <TextView
                 android:id="@+id/name_today_notes_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"/>
+                android:textStyle="bold"
+                android:gravity="start"/>
             <TextView
                 android:id="@+id/text_today_notes_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"/>
+                android:gravity="start"/>
         </LinearLayout>
         <ImageView
             android:id="@+id/img_menu_today_notes_item"
