@@ -1,13 +1,15 @@
 package com.amaizzzing.amaizingnotes.utils
 
-import androidx.work.*
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkRequest
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MyWorkerFactory  {
-    companion object{
-        fun getWorker(worker_type:MY_WORKER_TYPE) : WorkRequest{
-            when(worker_type){
+class MyWorkerFactory {
+    companion object {
+        fun getWorker(worker_type: MY_WORKER_TYPE): WorkRequest {
+            when (worker_type) {
                 MY_WORKER_TYPE.ONE_TIME -> {
                     val currentDate = Calendar.getInstance()
                     val dueDate = Calendar.getInstance()
@@ -20,18 +22,20 @@ class MyWorkerFactory  {
                     val timeDiff = dueDate.timeInMillis - currentDate.timeInMillis
                     return OneTimeWorkRequestBuilder<MyWorker>()
                         .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
-                        .addTag("fdfdfdf") .build()
+                        .addTag("tag").build()
                 }
-                MY_WORKER_TYPE.PERIODIC ->{ val dailyWorkRequest = PeriodicWorkRequestBuilder<MyWorker>(1,TimeUnit.HOURS)
-                    .addTag("fdfdfdf") .build()
-                    return dailyWorkRequest}
+                MY_WORKER_TYPE.PERIODIC -> {
+                    val dailyWorkRequest = PeriodicWorkRequestBuilder<MyWorker>(1, TimeUnit.HOURS)
+                        .addTag("tag").build()
+                    return dailyWorkRequest
+                }
             }
         }
     }
 }
 
 
-enum class MY_WORKER_TYPE{
+enum class MY_WORKER_TYPE {
     ONE_TIME,
     PERIODIC
 }

@@ -48,8 +48,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        NotesApplication.instance.getAppDataBase(this)?.close()
-        NotesApplication.instance.destroyDataBase()
+        NotesApplication.instance.getAppDataBase(this).close()
 
         super.onDestroy()
     }

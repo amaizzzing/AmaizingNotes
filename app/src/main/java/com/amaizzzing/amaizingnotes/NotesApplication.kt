@@ -1,102 +1,74 @@
 package com.amaizzzing.amaizingnotes
 
 import android.app.Application
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
-import android.graphics.Color
-import androidx.core.app.NotificationCompat
 import androidx.room.Room
-import com.amaizzzing.amaizingnotes.models.data.TodayNoteDatasource
-import com.amaizzzing.amaizingnotes.models.data.TodayNoteDatasourceImpl
-import com.amaizzzing.amaizingnotes.models.db.AppDatabase
-import com.amaizzzing.amaizingnotes.models.db.NoteDao
-import com.amaizzzing.amaizingnotes.models.interactors.TodayNotesInteractor
-import com.amaizzzing.amaizingnotes.models.interactors.TodayNotesInteractorImpl
-import com.amaizzzing.amaizingnotes.models.repositories.TodayNoteRepository
-import com.amaizzzing.amaizingnotes.models.repositories.TodayNoteRepositoryImpl
+import com.amaizzzing.amaizingnotes.model.data.TodayNoteDatasource
+import com.amaizzzing.amaizingnotes.model.data.TodayNoteDatasourceImpl
+import com.amaizzzing.amaizingnotes.model.db.AppDatabase
+import com.amaizzzing.amaizingnotes.model.di.components.DaggerDiNotesComponent
+import com.amaizzzing.amaizingnotes.model.di.components.DiNotesComponent
+import com.amaizzzing.amaizingnotes.model.di.modules.*
+import com.amaizzzing.amaizingnotes.model.interactors.TodayNotesInteractor
+import com.amaizzzing.amaizingnotes.model.repositories.TodayNoteRepository
+import com.amaizzzing.amaizingnotes.model.repositories.TodayNoteRepositoryImpl
+import com.amaizzzing.amaizingnotes.utils.DB_NAME
+import com.amaizzzing.amaizingnotes.utils.MyNotificationChannel
+import javax.inject.Inject
 
 class NotesApplication : Application() {
-    private var notificationManager: NotificationManager? = null
+    lateinit var noteComponent: DiNotesComponent
 
-    val todayNoteDataSource:TodayNoteDatasource = TodayNoteDatasourceImpl()
-    val todayNoteRepository:TodayNoteRepository = TodayNoteRepositoryImpl(todayNoteDataSource)
-    val todayNoteInteractor:TodayNotesInteractor = TodayNotesInteractorImpl(todayNoteRepository)
+    @Inject
+    lateinit var todayNoteDataSource: TodayNoteDatasource
 
-    var noteType=NOTE_TYPE.NOTE
+    @Inject
+    lateinit var todayNoteRepository: TodayNoteRepository
 
-    var appDataBase: AppDatabase? = null
-    var noteDao : NoteDao? = null
+    @Inject
+    lateinit var todayNoteInteractor: TodayNotesInteractor
+
+    @Inject
+    lateinit var notificationChannel: MyNotificationChannel
+
+    @Inject
+    lateinit var appDataBase: AppDatabase
 
     override fun onCreate() {
         super.onCreate()
         instance = this
 
-        val notificationManager =
-            applicationContext.getSystemService(
-                Context.NOTIFICATION_SERVICE
-            ) as NotificationManager
+        noteComponent = DaggerDiNotesComponent
+            .builder()
+            .appDatabaseModule(AppDatabaseModule())
+            .noteNotificationModule(NoteNotificationModule())
+            .noteDatasourceModule(NoteDatasourceModule())
+            .noteRepositoryModule(NoteRepositoryModule(TodayNoteDatasourceImpl()))
+            .noteInteractorModule(
+                NoteInteractorModule(
+                    TodayNoteRepositoryImpl(
+                        TodayNoteDatasourceImpl()
+                    )
+                )
+            )
+            .build()
+        noteComponent.injectDiApplication(this)
 
-        createNotificationChannel(
+        notificationChannel.createNotificationChannel(
             resources.getString(R.string.id_notifications_channel),
             resources.getString(R.string.name_notifications_channel),
             resources.getString(R.string.description_notifications_channel)
         )
     }
 
-    fun getNotificationManager() = notificationManager
-
     fun getMyTodayNoteInteractor() = todayNoteInteractor
 
-    fun getAppDataBase(context:Context = applicationContext): AppDatabase? {
-        if (appDataBase == null){
-            synchronized(AppDatabase::class){
-                appDataBase = Room.databaseBuilder(context, AppDatabase::class.java, "AmaizingNotesDB").build()
-                noteDao = appDataBase?.noteDao()
-            }
-        }
-        return appDataBase
-    }
+    fun getAppDataBase(context: Context = applicationContext) = appDataBase
 
-    fun getAppNoteDao() = noteDao
-
-    fun destroyDataBase(){
-        appDataBase = null
-    }
-
-    enum class NOTE_TYPE{NOTE,EXERS}
+    fun getNotificationManager() = notificationChannel.notificationManager
 
     companion object {
-        lateinit var instance : NotesApplication private set
-
-    }
-
-    private fun createNotificationChannel(
-        id: String, name: String,
-        description: String
-    ) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(id, name, importance)
-            channel.enableLights(true)
-            channel.lightColor = Color.RED
-            channel.enableVibration(true)
-            channel.vibrationPattern =
-                longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
-            notificationManager?.createNotificationChannel(channel)
-            channel.description = description
-        }else{
-            val builder = NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Title")
-                .setContentText("Notification text")
-
-            val notification: Notification = builder.build()
-
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.notify(1, notification)
-        }
-
+        lateinit var instance: NotesApplication private set
     }
 }
+

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_notification"
-        android:name="com.amaizzzing.amaizingnotes.view.fragments.notification.NotificationFragment"
+        android:name="com.amaizzzing.amaizingnotes.view.fragments.NotificationFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notification" >
         <action
@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_calendar"
-        android:name="com.amaizzzing.amaizingnotes.view.fragments.calendar.CalendarFragment"
+        android:name="com.amaizzzing.amaizingnotes.view.fragments.CalendarFragment"
         android:label="@string/title_calendar"
         tools:layout="@layout/fragment_calendar" >
         <action
@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/navigation_not_finish"
-        android:name="com.amaizzzing.amaizingnotes.view.fragments.not_finish.NotFinishFragment"
+        android:name="com.amaizzzing.amaizingnotes.view.fragments.NotFinishFragment"
         android:label="@string/not_finish"
         tools:layout="@layout/fragment_not_finish" >
         <action
@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/navigation_add_notes"
-        android:name="com.amaizzzing.amaizingnotes.view.fragments.add_note.AddNoteFragment"
+        android:name="com.amaizzzing.amaizingnotes.view.fragments.AddNoteFragment"
         android:label="AddNotes"
         tools:layout="@layout/add_note_fragment" >
         <argument
