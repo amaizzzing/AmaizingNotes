@@ -24,6 +24,10 @@ class MainActivity : AppCompatActivity() {
 
         configNavController()
 
+        startWork()
+    }
+
+    private fun startWork() {
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
             "mywork",
             ExistingPeriodicWorkPolicy.KEEP,
@@ -45,12 +49,6 @@ class MainActivity : AppCompatActivity() {
             )
         )
         navView.setupWithNavController(navController)
-    }
-
-    override fun onDestroy() {
-        NotesApplication.instance.getAppDataBase(this).close()
-
-        super.onDestroy()
     }
 }
 
