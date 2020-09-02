@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.amaizzzing.amaizingnotes.NotesApplication
 import com.amaizzzing.amaizingnotes.model.entities.Note
+import com.amaizzzing.amaizingnotes.model.interactors.TodayNotesInteractor
 import com.amaizzzing.amaizingnotes.model.mappers.NoteMapper
 import com.amaizzzing.amaizingnotes.utils.getEndDay
 import com.amaizzzing.amaizingnotes.utils.getStartDay
@@ -13,10 +14,10 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import java.util.*
+import javax.inject.Inject
 
-class CalendarViewModel : ViewModel() {
+class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor): ViewModel() {
     var someDaysLiveData: MutableLiveData<MutableList<Note>> = MutableLiveData()
-    private val interactor = NotesApplication.instance.getMyTodayNoteInteractor()
     private var compositeDisposable = CompositeDisposable()
     private var dis: Disposable? = null
 

@@ -13,12 +13,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.adapters.TodayNotesAdapter
+import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
+import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.utils.SPAN_COUNT_RV
 import com.amaizzzing.amaizingnotes.viewmodel.NotFinishViewModel
 import kotlinx.android.synthetic.main.fragment_not_finish.view.*
+import javax.inject.Inject
 
 class NotFinishFragment : Fragment() {
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
     private lateinit var notFinishViewModel: NotFinishViewModel
     private lateinit var rvFragmentNotFinish: RecyclerView
     private lateinit var todayNotesAdapter: TodayNotesAdapter
@@ -33,8 +38,12 @@ class NotFinishFragment : Fragment() {
 
         initViews(root)
 
+        val comp2 = DaggerComponent2.builder()
+            .clearModule(ClearModule())
+            .build()
+        comp2.injectToNotFinishFragment(this)
         notFinishViewModel =
-            ViewModelProvider(this).get(NotFinishViewModel::class.java)
+            ViewModelProvider(this,factory).get(NotFinishViewModel::class.java)
 
         notFinishViewModel.fetchAllNotFinishNotes()?.observe(viewLifecycleOwner, Observer {
             initRecyclerView(it)

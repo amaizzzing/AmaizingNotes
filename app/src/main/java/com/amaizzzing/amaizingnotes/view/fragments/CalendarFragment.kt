@@ -12,15 +12,26 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.amaizzzing.amaizingnotes.NotesApplication
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.adapters.TodayNotesAdapter
+import com.amaizzzing.amaizingnotes.model.data.TodayNoteDatasourceImpl
+import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
+import com.amaizzzing.amaizingnotes.model.di.components.DaggerDiNotesComponent
+import com.amaizzzing.amaizingnotes.model.di.modules.*
 import com.amaizzzing.amaizingnotes.model.entities.Note
+import com.amaizzzing.amaizingnotes.model.repositories.TodayNoteRepositoryImpl
 import com.amaizzzing.amaizingnotes.utils.*
 import com.amaizzzing.amaizingnotes.viewmodel.CalendarViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_calendar.view.*
+import javax.inject.Inject
 
 class CalendarFragment : Fragment() {
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
+    lateinit var calendarViewModel: CalendarViewModel
+
     private lateinit var cvTodayRangeFragmentCalendar: CardView
     private lateinit var cv7dayRangeFragmentCalendar: CardView
     private lateinit var cv14dayRangeFragmentCalendar: CardView
@@ -30,8 +41,6 @@ class CalendarFragment : Fragment() {
 
     private lateinit var todayNotesAdapter: TodayNotesAdapter
     private lateinit var navController: NavController
-
-    private lateinit var calendarViewModel: CalendarViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +52,12 @@ class CalendarFragment : Fragment() {
         initViews(root)
         initListeners()
 
-        calendarViewModel = ViewModelProvider(this).get(CalendarViewModel::class.java)
+        val comp2 = DaggerComponent2.builder()
+            .clearModule(ClearModule())
+            .build()
+        comp2.injectToCalendarFragment(this)
+
+        calendarViewModel = ViewModelProvider(this,factory).get(CalendarViewModel::class.java)
         calendarViewModel.someDaysLiveData.observe(viewLifecycleOwner, Observer {
             initRecyclerView(it)
         })

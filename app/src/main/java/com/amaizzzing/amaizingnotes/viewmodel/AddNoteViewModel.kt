@@ -5,11 +5,13 @@ import androidx.lifecycle.ViewModel
 import com.amaizzzing.amaizingnotes.NotesApplication
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.entities.Note
+import com.amaizzzing.amaizingnotes.model.interactors.TodayNotesInteractor
 import com.amaizzzing.amaizingnotes.model.mappers.NoteMapper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class AddNoteViewModel : ViewModel(), LifecycleObserver {
+class AddNoteViewModel @Inject constructor(var interactor: TodayNotesInteractor) : ViewModel(), LifecycleObserver {
     fun insertNote(apiNote: ApiNote) {
         if (apiNote.id == -1L) {
             apiNote.id = 0L
