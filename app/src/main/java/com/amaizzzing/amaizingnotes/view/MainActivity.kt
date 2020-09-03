@@ -9,7 +9,6 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import com.amaizzzing.amaizingnotes.NotesApplication
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.utils.MY_WORKER_TYPE
 import com.amaizzzing.amaizingnotes.utils.MyWorkerFactory
@@ -45,7 +44,7 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.navigation_calendar,
                 R.id.navigation_not_finish,
-                R.id.navigation_notification
+                R.id.navigation_results
             )
         )
         navView.setupWithNavController(navController)

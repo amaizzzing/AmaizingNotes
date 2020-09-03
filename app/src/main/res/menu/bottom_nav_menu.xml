@@ -12,7 +12,7 @@
         android:title="@string/not_finish" />
 
     <item
-        android:id="@+id/navigation_notification"
+        android:id="@+id/navigation_results"
         android:icon="@drawable/ic_results_24"
         android:title="@string/title_results" />
 </menu>

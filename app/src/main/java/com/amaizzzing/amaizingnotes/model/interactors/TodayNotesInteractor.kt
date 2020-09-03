@@ -16,7 +16,11 @@ interface TodayNotesInteractor {
 
     fun getTodayNotes(startDay:Long,endDay:Long) : Flowable<List<ApiNote>>?
 
+    fun getCountFinishTasks(startDay: Long, endDay: Long) : Int
+
     fun getNoteById(id1:Long) : Maybe<ApiNote>?
 
     fun getNotFinishNotes() : LiveData<MutableList<ApiNote>>?
+
+    fun getCoefRatingForDays() : Float
 }

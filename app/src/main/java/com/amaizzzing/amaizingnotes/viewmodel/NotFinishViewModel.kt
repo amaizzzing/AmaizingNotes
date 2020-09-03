@@ -12,7 +12,6 @@ import javax.inject.Inject
 
 class NotFinishViewModel @Inject constructor(var interactor: TodayNotesInteractor): ViewModel() {
     var listNotFinishNotes: LiveData<MutableList<Note>>? = null
-    //private val interactor = NotesApplication.instance.getMyTodayNoteInteractor()
 
     init {
         getNotFinishNotesFromDB()

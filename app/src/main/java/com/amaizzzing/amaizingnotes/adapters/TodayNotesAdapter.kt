@@ -29,11 +29,12 @@ class TodayNotesAdapter(var items: List<Note>, val callback: Callback) :
         private val chkbxTodayNotesItem = itemView.chkbx_today_notes_item
 
         fun bind(item: Note) {
-            timeTodayNotesItem.text = item.date
-            nameTodayNotesItem.text = item.nameNote
-            textTodayNotesItem.text = item.text
-            chkbxTodayNotesItem.isChecked = item.isDone
-
+            with(item) {
+                timeTodayNotesItem.text = date
+                nameTodayNotesItem.text = nameNote
+                textTodayNotesItem.text = text
+                chkbxTodayNotesItem.isChecked = isDone
+            }
             textTodayNotesItem.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) callback.onItemClicked(items[adapterPosition])
             }

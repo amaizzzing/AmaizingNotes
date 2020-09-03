@@ -1,4 +1,4 @@
-package com.amaizzzing.amaizingnotes.viewmodel
+package com.amaizzzing.amaizingnotes.viewmodel.viewmodel_factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
