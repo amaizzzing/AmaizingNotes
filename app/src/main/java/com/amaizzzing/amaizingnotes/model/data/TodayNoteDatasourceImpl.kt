@@ -22,9 +22,15 @@ class TodayNoteDatasourceImpl : TodayNoteDatasource {
     override fun getTodayNote(startDay: Long, endDay: Long): Flowable<List<ApiNote>>? =
         NotesApplication.instance.getAppDataBase()?.noteDao()?.getTodayNotes(startDay, endDay)
 
+    override fun getCountFinishTasks(startDay: Long, endDay: Long): Int =
+        NotesApplication.instance.getAppDataBase()?.noteDao()?.getCountFinishTasks(startDay, endDay)
+
     override fun getNoteById(id1: Long): Maybe<ApiNote>? =
         NotesApplication.instance.getAppDataBase()?.noteDao()?.getNoteById(id1)
 
     override fun getNotFinishNotes(): LiveData<MutableList<ApiNote>>? =
         NotesApplication.instance.getAppDataBase()?.noteDao()?.getNotFinishNotes()
+
+    override fun getCoefRatingForDays(): Double =
+        NotesApplication.instance.getAppDataBase()?.noteDao()?.getCoefRatingForDays()
 }

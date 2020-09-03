@@ -6,15 +6,10 @@
     app:startDestination="@+id/navigation_calendar">
 
     <fragment
-        android:id="@+id/navigation_notification"
-        android:name="com.amaizzzing.amaizingnotes.view.fragments.NotificationFragment"
+        android:id="@+id/navigation_results"
+        android:name="com.amaizzzing.amaizingnotes.view.fragments.ResultsFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notification" >
-        <action
-            android:id="@+id/action_navigation_notification_to_navigation_add_notes"
-            app:destination="@id/navigation_add_notes"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim" />
+        tools:layout="@layout/fragment_results" >
     </fragment>
 
     <fragment

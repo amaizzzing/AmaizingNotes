@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
+import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
+import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.utils.DATE_PATTERN
 import com.amaizzzing.amaizingnotes.utils.TIME_PATTERN
@@ -23,6 +25,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.add_note_fragment.view.*
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 class AddNoteFragment : Fragment() {
     private lateinit var btnOkAddNoteFragment: ImageView
@@ -43,6 +46,8 @@ class AddNoteFragment : Fragment() {
 
     private var idFromHomeFragment: Long? = -1L
 
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
     private lateinit var viewModel: AddNoteViewModel
 
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -54,7 +59,11 @@ class AddNoteFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.add_note_fragment, container, false)
 
-        viewModel = ViewModelProvider(this)[AddNoteViewModel::class.java]
+        val comp2 = DaggerComponent2.builder()
+            .clearModule(ClearModule())
+            .build()
+        comp2.injectToAddNoteFragment(this)
+        viewModel = ViewModelProvider(this,factory)[AddNoteViewModel::class.java]
 
         initViews(root)
         initListeners()

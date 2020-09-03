@@ -5,12 +5,13 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.amaizzzing.amaizingnotes.NotesApplication
 import com.amaizzzing.amaizingnotes.model.entities.Note
+import com.amaizzzing.amaizingnotes.model.interactors.TodayNotesInteractor
 import com.amaizzzing.amaizingnotes.model.mappers.NoteMapper
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class NotFinishViewModel : ViewModel() {
+class NotFinishViewModel @Inject constructor(var interactor: TodayNotesInteractor): ViewModel() {
     var listNotFinishNotes: LiveData<MutableList<Note>>? = null
-    private val interactor = NotesApplication.instance.getMyTodayNoteInteractor()
 
     init {
         getNotFinishNotesFromDB()

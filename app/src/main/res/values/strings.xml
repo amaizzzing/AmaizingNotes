@@ -17,4 +17,10 @@
     <string name="id_notifications_channel">com.amaizzzing.amaizingnotes.notes</string>
     <string name="name_notifications_channel">NotesToStart</string>
     <string name="description_notifications_channel">Notes to start today</string>
+    <string name="date">Дата</string>
+    <string name="name_note">Название записи</string>
+    <string name="text_note">Текст записи</string>
+    <string name="time_start">Время начала</string>
+    <string name="time_end">Время окончания</string>
+    <string name="time">Время</string>
 </resources>

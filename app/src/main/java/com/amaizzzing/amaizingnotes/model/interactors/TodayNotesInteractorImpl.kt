@@ -9,7 +9,7 @@ import io.reactivex.Maybe
 class TodayNotesInteractorImpl(private val todayNoteRepository: TodayNoteRepository) :
     TodayNotesInteractor {
 
-    override fun updateNote(apiNote: ApiNote) : Maybe<Int>?=
+    override fun updateNote(apiNote: ApiNote): Maybe<Int>? =
         todayNoteRepository.updateNote(apiNote)
 
     override fun deleteNote(apiNote: ApiNote): Maybe<Int>? =
@@ -24,9 +24,21 @@ class TodayNotesInteractorImpl(private val todayNoteRepository: TodayNoteReposit
     override fun getTodayNotes(startDay: Long, endDay: Long): Flowable<List<ApiNote>>? =
         todayNoteRepository.getTodayNote(startDay, endDay)
 
+    override fun getCountFinishTasks(startDay: Long, endDay: Long): Int =
+        todayNoteRepository.getCountFinishTasks(startDay, endDay)
+
     override fun getNoteById(id1: Long): Maybe<ApiNote>? =
         todayNoteRepository.getNoteById(id1)
 
     override fun getNotFinishNotes(): LiveData<MutableList<ApiNote>>? =
         todayNoteRepository.getNotFinishNotes()
+
+    override fun getCoefRatingForDays(): Float {
+        val coef = todayNoteRepository.getCoefRatingForDays()
+        return when {
+            coef < 0 -> 3f
+            coef in 0f..0.9f -> 2f
+            else -> 1f
+        }
+    }
 }
