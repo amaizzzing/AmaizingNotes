@@ -24,6 +24,12 @@
             android:id="@+id/time_today_notes_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/type_notes_item"/>
+        <TextView
+            android:id="@+id/type_notes_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_5dp"
             android:layout_marginBottom="@dimen/margin_5dp"
             app:layout_constraintStart_toStartOf="parent"

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.interactors.TodayNotesInteractor
 import com.amaizzzing.amaizingnotes.model.mappers.NoteMapper
+import com.amaizzzing.amaizingnotes.view.view_states.AddNoteViewState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -33,6 +34,8 @@ class AddNoteViewModel @Inject constructor(var interactor: TodayNotesInteractor)
     fun getChosenNote(id: Long) =
         interactor.getNoteById(id)
             ?.map { NoteMapper.apiNoteToNote(it) }
+            ?.map{AddNoteViewState(false,null,it)}
+            ?.onErrorReturn { AddNoteViewState(false,it,null) }
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
 }

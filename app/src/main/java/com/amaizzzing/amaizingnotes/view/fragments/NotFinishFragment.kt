@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +19,7 @@ import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
 import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.utils.SPAN_COUNT_RV
+import com.amaizzzing.amaizingnotes.view.view_states.NotFinishViewState
 import com.amaizzzing.amaizingnotes.viewmodel.NotFinishViewModel
 import kotlinx.android.synthetic.main.fragment_not_finish.view.*
 import javax.inject.Inject
@@ -28,6 +31,7 @@ class NotFinishFragment : Fragment() {
     private lateinit var rvFragmentNotFinish: RecyclerView
     private lateinit var todayNotesAdapter: TodayNotesAdapter
     private lateinit var navController: NavController
+    private lateinit var pbNotFinishFragment: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,15 +46,43 @@ class NotFinishFragment : Fragment() {
             .clearModule(ClearModule())
             .build()
         comp2.injectToNotFinishFragment(this)
-        notFinishViewModel =
-            ViewModelProvider(this,factory).get(NotFinishViewModel::class.java)
 
-        notFinishViewModel.fetchAllNotFinishNotes()?.observe(viewLifecycleOwner, Observer {
-            initRecyclerView(it)
+        notFinishViewModel =
+            ViewModelProvider(this, factory).get(NotFinishViewModel::class.java)
+
+        notFinishViewModel.listNotFinishNotes.observe(viewLifecycleOwner, Observer {
+            renderUI(it)
         })
 
-
         return root
+    }
+
+    private fun renderUI(noteViewState: NotFinishViewState) {
+        renderProgress(noteViewState.isLoading)
+        renderError(noteViewState.error)
+        renderNoteList(noteViewState.notes)
+    }
+
+    private fun renderError(error: Throwable?) {
+        if (error != null) {
+            Toast.makeText(context, "ERROR!", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun renderNoteList(notes: List<Note>?) {
+        if (notes != null) {
+            initRecyclerView(notes)
+        }
+    }
+
+    private fun renderProgress(isLoad: Boolean) {
+        if (isLoad) {
+            pbNotFinishFragment.visibility = View.VISIBLE
+            rvFragmentNotFinish.visibility = View.GONE
+        } else {
+            pbNotFinishFragment.visibility = View.GONE
+            rvFragmentNotFinish.visibility = View.VISIBLE
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -60,6 +92,7 @@ class NotFinishFragment : Fragment() {
 
     private fun initViews(v: View) {
         rvFragmentNotFinish = v.rv_fragment_not_finish
+        pbNotFinishFragment = v.pb_not_finish_fragment
     }
 
     private fun initRecyclerView(notesList: List<Note>) {

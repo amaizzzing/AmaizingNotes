@@ -3,6 +3,7 @@ package com.amaizzzing.amaizingnotes.utils
 const val DB_NAME = "AmaizingNotesDB"
 
 const val DAYS_0_IN_MILLIS = 0L
+const val DAYS_3_IN_MILLIS = 385106000L
 const val DAYS_7_IN_MILLIS = 670211000L
 const val DAYS_14_IN_MILLIS = 1340422000L
 const val DAYS_30_IN_MILLIS = 2872332857L

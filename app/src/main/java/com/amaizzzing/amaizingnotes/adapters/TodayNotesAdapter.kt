@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.model.entities.Note
+import com.amaizzzing.amaizingnotes.model.entities.NoteType
 import kotlinx.android.synthetic.main.today_notes_item.view.*
 
 class TodayNotesAdapter(var items: List<Note>, val callback: Callback) :
@@ -27,13 +28,23 @@ class TodayNotesAdapter(var items: List<Note>, val callback: Callback) :
         private val textTodayNotesItem = itemView.findViewById<TextView>(R.id.text_today_notes_item)
         private val nameTodayNotesItem = itemView.findViewById<TextView>(R.id.name_today_notes_item)
         private val chkbxTodayNotesItem = itemView.chkbx_today_notes_item
+        private val typeNotesitem = itemView.type_notes_item
 
         fun bind(item: Note) {
             with(item) {
                 timeTodayNotesItem.text = date
                 nameTodayNotesItem.text = nameNote
                 textTodayNotesItem.text = text
+
+                if(item.typeNote==NoteType.TASK.type){
+                    chkbxTodayNotesItem.visibility = View.VISIBLE
+
+                }else{
+                    chkbxTodayNotesItem.visibility = View.GONE
+                }
+                typeNotesitem.text = item.typeNote
                 chkbxTodayNotesItem.isChecked = isDone
+
             }
             textTodayNotesItem.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) callback.onItemClicked(items[adapterPosition])
