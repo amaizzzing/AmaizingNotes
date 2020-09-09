@@ -4,11 +4,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amaizzzing.amaizingnotes.model.entities.AllResults
+import com.amaizzzing.amaizingnotes.model.entities.ResultsNotesItem
 import com.amaizzzing.amaizingnotes.model.interactors.TodayNotesInteractor
 import com.amaizzzing.amaizingnotes.utils.DAYS_30_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.DAYS_7_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.getEndDay
 import com.amaizzzing.amaizingnotes.utils.getStartDay
+import com.amaizzzing.amaizingnotes.view.base.BaseViewModel
+import com.amaizzzing.amaizingnotes.view.base.BaseViewState
 import com.amaizzzing.amaizingnotes.view.view_states.ResultsViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -16,16 +19,17 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-class ResultsViewModel @Inject constructor(var interactor: TodayNotesInteractor) : ViewModel() {
-    private var resultsViewState: ResultsViewState = ResultsViewState(true, null, null)
-    var results: MutableLiveData<ResultsViewState> = MutableLiveData(resultsViewState)
+class ResultsViewModel @Inject constructor(var interactor: TodayNotesInteractor) :
+    BaseViewModel<AllResults,ResultsViewState<AllResults>>() {
+    private var resultsViewState: ResultsViewState<AllResults> = ResultsViewState(true, null, null)
+    //var results: MutableLiveData<BaseViewState<AllResults>> = MutableLiveData(resultsViewState)
     private var allResultsNotes = AllResults()
 
     init {
         viewModelScope.launch(Dispatchers.Main) {
             getRating()
             getResultsFromDB()
-            results.value = resultsViewState
+            viewStateLiveData.value = resultsViewState
         }
     }
 

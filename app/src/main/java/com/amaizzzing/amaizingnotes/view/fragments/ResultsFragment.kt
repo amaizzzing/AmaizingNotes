@@ -12,6 +12,7 @@ import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
 import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.AllResults
+import com.amaizzzing.amaizingnotes.view.base.BaseViewState
 import com.amaizzzing.amaizingnotes.view.view_states.ResultsViewState
 import com.amaizzzing.amaizingnotes.viewmodel.ResultsViewModel
 import kotlinx.android.synthetic.main.fragment_results.view.*
@@ -55,10 +56,10 @@ class ResultsFragment : Fragment() {
         return root
     }
 
-    private fun renderUI(resultsViewState: ResultsViewState) {
+    private fun renderUI(resultsViewState: BaseViewState<AllResults>) {
         renderProgress(resultsViewState.isLoading)
         renderError(resultsViewState.error)
-        renderResults(resultsViewState.allResults)
+        renderResults(resultsViewState.data)
     }
 
     private fun renderResults(allResults: AllResults?) {

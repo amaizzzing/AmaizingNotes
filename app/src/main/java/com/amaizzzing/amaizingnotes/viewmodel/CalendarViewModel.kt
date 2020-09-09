@@ -8,6 +8,8 @@ import com.amaizzzing.amaizingnotes.model.interactors.TodayNotesInteractor
 import com.amaizzzing.amaizingnotes.model.mappers.NoteMapper
 import com.amaizzzing.amaizingnotes.utils.getEndDay
 import com.amaizzzing.amaizingnotes.utils.getStartDay
+import com.amaizzzing.amaizingnotes.view.base.BaseViewModel
+import com.amaizzzing.amaizingnotes.view.base.BaseViewState
 import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
@@ -17,8 +19,9 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
-class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor) : ViewModel() {
-    var someDaysLiveData: MutableLiveData<CalendarNoteViewState> = MutableLiveData()
+class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor) :
+    BaseViewModel<MutableList<Note>,CalendarNoteViewState<MutableList<Note>>>() {
+    //var someDaysLiveData: MutableLiveData<BaseViewState<MutableList<Note>>> = MutableLiveData()
     private var compositeDisposable = CompositeDisposable()
     private var dis: Disposable? = null
 
@@ -43,10 +46,10 @@ class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor
         }
         dis = flowNotes
             ?.map { it -> CalendarNoteViewState(false, null, it) }
-            ?.startWith(CalendarNoteViewState(true, null, null))
+            ?.startWith(CalendarNoteViewState<MutableList<Note>>(true, null, null))
             ?.onErrorReturn { CalendarNoteViewState(false, it, null) }
             ?.subscribeBy { noteViewState ->
-                someDaysLiveData.value = noteViewState
+                viewStateLiveData.value = noteViewState
             }!!
         compositeDisposable.add(dis!!)
     }
@@ -54,10 +57,10 @@ class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor
     fun searchNotes(searchText: String) {
         compositeDisposable.add(interactor.searchNotes("%$searchText%")
             .map { CalendarNoteViewState(false, null, it) }
-            .startWith(CalendarNoteViewState(true, null, null))
+            .startWith(CalendarNoteViewState<MutableList<Note>>(true, null, null))
             .onErrorReturn { CalendarNoteViewState(false, it, null) }
             .subscribeBy { noteViewState ->
-                someDaysLiveData.value = noteViewState
+                viewStateLiveData.value = noteViewState
             }
         )
     }

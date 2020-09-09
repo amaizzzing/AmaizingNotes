@@ -25,6 +25,7 @@ import com.amaizzzing.amaizingnotes.utils.DAYS_0_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.DAYS_30_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.DAYS_7_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.SPAN_COUNT_RV
+import com.amaizzzing.amaizingnotes.view.base.BaseViewState
 import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import com.amaizzzing.amaizingnotes.viewmodel.CalendarViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -70,17 +71,17 @@ class CalendarFragment : Fragment() {
         comp2.injectToCalendarFragment(this)
 
         calendarViewModel = ViewModelProvider(this, factory).get(CalendarViewModel::class.java)
-        calendarViewModel.someDaysLiveData.observe(viewLifecycleOwner, Observer {
+        calendarViewModel.viewStateLiveData.observe(viewLifecycleOwner, Observer {
             renderUI(it)
         })
 
         return root
     }
 
-    private fun renderUI(noteViewState: CalendarNoteViewState) {
+    private fun renderUI(noteViewState: BaseViewState<MutableList<Note>>) {
         renderError(noteViewState.error)
         renderProgress(noteViewState.isLoading)
-        renderNoteList(noteViewState.notes)
+        renderNoteList(noteViewState.data)
     }
 
     private fun renderNoteList(notes: List<Note>?) {
