@@ -9,9 +9,12 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import com.amaizzzing.amaizingnotes.NotesApplication
 import com.amaizzzing.amaizingnotes.R
+import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.utils.MY_WORKER_TYPE
 import com.amaizzzing.amaizingnotes.utils.MyWorkerFactory
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -24,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         configNavController()
 
         startWork()
+
     }
 
     private fun startWork() {

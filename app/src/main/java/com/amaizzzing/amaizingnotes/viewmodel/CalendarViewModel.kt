@@ -2,6 +2,7 @@ package com.amaizzzing.amaizingnotes.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.model.entities.NoteType
 import com.amaizzzing.amaizingnotes.model.interactors.TodayNotesInteractor
@@ -12,6 +13,7 @@ import com.amaizzzing.amaizingnotes.view.base.BaseViewModel
 import com.amaizzzing.amaizingnotes.view.base.BaseViewState
 import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
@@ -29,6 +31,7 @@ class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor
         range: Long = Date().getEndDay(Calendar.getInstance().time.time),
         noteType: NoteType
     ) {
+        interactor.insertNote(ApiNote(1,"task",1111111,111111,11111,"ololo","ololo",false))
         if (dis != null) compositeDisposable.remove(dis!!)
         val defaultTime = Calendar.getInstance().time.time
         var flowNotes: Flowable<MutableList<Note>>?

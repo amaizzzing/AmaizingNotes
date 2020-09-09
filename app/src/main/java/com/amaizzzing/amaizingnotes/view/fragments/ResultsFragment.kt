@@ -49,7 +49,7 @@ class ResultsFragment : Fragment() {
 
         resultViewModel =
             ViewModelProvider(this, factory).get(ResultsViewModel::class.java)
-        resultViewModel.results.observe(viewLifecycleOwner, Observer {
+        resultViewModel.getViewState().observe(viewLifecycleOwner, Observer {
             renderUI(it)
         })
 

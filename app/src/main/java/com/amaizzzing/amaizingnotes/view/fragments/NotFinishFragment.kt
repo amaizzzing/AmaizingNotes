@@ -51,7 +51,7 @@ class NotFinishFragment : Fragment() {
         notFinishViewModel =
             ViewModelProvider(this, factory).get(NotFinishViewModel::class.java)
 
-        notFinishViewModel.listNotFinishNotes.observe(viewLifecycleOwner, Observer {
+        notFinishViewModel.getViewState().observe(viewLifecycleOwner, Observer {
             renderUI(it)
         })
 

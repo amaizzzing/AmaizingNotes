@@ -25,6 +25,8 @@ import com.amaizzzing.amaizingnotes.utils.DAYS_0_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.DAYS_30_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.DAYS_7_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.SPAN_COUNT_RV
+import com.amaizzzing.amaizingnotes.view.base.BaseFragment
+import com.amaizzzing.amaizingnotes.view.base.BaseViewModel
 import com.amaizzzing.amaizingnotes.view.base.BaseViewState
 import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import com.amaizzzing.amaizingnotes.viewmodel.CalendarViewModel
@@ -32,10 +34,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_calendar.view.*
 import javax.inject.Inject
 
-class CalendarFragment : Fragment() {
+class CalendarFragment : BaseFragment<MutableList<Note>,CalendarNoteViewState<MutableList<Note>>>() {
+    override val viewModel: CalendarViewModel by lazy {
+        ViewModelProvider(this, factory).get(CalendarViewModel::class.java)
+    }
+    override val layoutRes: Int = R.layout.fragment_calendar
+
     @Inject
     lateinit var factory: ViewModelProvider.Factory
-    lateinit var calendarViewModel: CalendarViewModel
+    //lateinit var calendarViewModel: CalendarViewModel
 
     private lateinit var rvFragmentCalendar: RecyclerView
     private lateinit var fabButtonFragmentCalendar: FloatingActionButton
@@ -70,19 +77,25 @@ class CalendarFragment : Fragment() {
             .build()
         comp2.injectToCalendarFragment(this)
 
-        calendarViewModel = ViewModelProvider(this, factory).get(CalendarViewModel::class.java)
-        calendarViewModel.viewStateLiveData.observe(viewLifecycleOwner, Observer {
+        //calendarViewModel = ViewModelProvider(this, factory).get(CalendarViewModel::class.java)
+        viewModel.viewStateLiveData.observe(viewLifecycleOwner, Observer {
             renderUI(it)
         })
 
         return root
     }
 
-    private fun renderUI(noteViewState: BaseViewState<MutableList<Note>>) {
+    override fun renderUI(data: CalendarNoteViewState<MutableList<Note>>) {
+        renderError(data.error)
+        renderProgress(data.isLoading)
+        renderNoteList(data.data)
+    }
+
+    /*private fun renderUI(noteViewState: BaseViewState<MutableList<Note>>) {
         renderError(noteViewState.error)
         renderProgress(noteViewState.isLoading)
         renderNoteList(noteViewState.data)
-    }
+    }*/
 
     private fun renderNoteList(notes: List<Note>?) {
         if (notes != null) {
@@ -157,7 +170,7 @@ class CalendarFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                calendarViewModel.searchNotes(newText!!)
+                viewModel.searchNotes(newText!!)
                 return true
             }
 
@@ -182,25 +195,25 @@ class CalendarFragment : Fragment() {
                     )
                     else -> 0L
                 }
-            calendarViewModel.getSomeDays(range,NoteType.ALL)
+            viewModel.getSomeDays(range,NoteType.ALL)
         }else {
             when {
-                radbutTodayCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+                radbutTodayCalendarFragment.isChecked -> viewModel.getSomeDays(
                     getRangeForFilter(
                         radbutTodayCalendarFragment
                     ), noteType
                 )
-                radbutWeekCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+                radbutWeekCalendarFragment.isChecked -> viewModel.getSomeDays(
                     getRangeForFilter(
                         radbutWeekCalendarFragment
                     ), noteType
                 )
-                radbutMonthCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+                radbutMonthCalendarFragment.isChecked -> viewModel.getSomeDays(
                     getRangeForFilter(
                         radbutMonthCalendarFragment
                     ), noteType
                 )
-                radbutAlltimeCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+                radbutAlltimeCalendarFragment.isChecked -> viewModel.getSomeDays(
                     getRangeForFilter(
                         radbutAlltimeCalendarFragment
                     ), noteType
@@ -211,17 +224,17 @@ class CalendarFragment : Fragment() {
 
     private fun geNotesByRange(radioButton: RadioButton) {
         when {
-            radbutAllCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+            radbutAllCalendarFragment.isChecked -> viewModel.getSomeDays(
                 getRangeForFilter(
                     radioButton
                 ), NoteType.ALL
             )
-            radbutNotesCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+            radbutNotesCalendarFragment.isChecked -> viewModel.getSomeDays(
                 getRangeForFilter(
                     radioButton
                 ), NoteType.NOTE
             )
-            radbutTasksCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+            radbutTasksCalendarFragment.isChecked -> viewModel.getSomeDays(
                 getRangeForFilter(
                     radioButton
                 ), NoteType.TASK
@@ -257,7 +270,7 @@ class CalendarFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        calendarViewModel.getSomeDays(0L,NoteType.ALL)
+        viewModel.getSomeDays(0L,NoteType.ALL)
     }
 
     private fun initRecyclerView(notesList: List<Note>) {
@@ -273,11 +286,13 @@ class CalendarFragment : Fragment() {
 
             override fun onChcbxChecked(item: Note, isChecked: Boolean) {
                 item.isDone = isChecked
-                calendarViewModel.updateNote(item)
+                viewModel.updateNote(item)
             }
         })
         rvFragmentCalendar.layoutManager = GridLayoutManager(context, SPAN_COUNT_RV)
         todayNotesAdapter.items = notesList
         rvFragmentCalendar.adapter = todayNotesAdapter
     }
+
+
 }

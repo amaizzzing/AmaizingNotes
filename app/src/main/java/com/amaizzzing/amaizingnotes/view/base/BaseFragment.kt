@@ -36,12 +36,6 @@ abstract class BaseFragment<T,S : BaseViewState<T>> : Fragment() {
 
     abstract fun renderUI(data:S)
 
-    private fun renderError(error: Throwable?) {
-        if (error != null) {
-            Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
-        }
-    }
-
     /*override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layoutRes)
