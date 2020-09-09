@@ -14,8 +14,11 @@ class TodayNoteRepositoryImpl(private val todayNoteDatasource: TodayNoteDatasour
     override fun deleteNoteById(id1: Long): Maybe<Int>? =
         todayNoteDatasource.deleteNoteById(id1)
 
-    override fun getTodayNote(startDay: Long, endDay: Long): Flowable<List<ApiNote>>? =
-        todayNoteDatasource.getTodayNote(startDay, endDay)
+    override fun getTodayNote(startDay: Long, endDay: Long, typeRecord:String): Flowable<List<ApiNote>>? =
+        todayNoteDatasource.getTodayNote(startDay, endDay, typeRecord)
+
+    override fun getAllNotes(startDay: Long, endDay: Long): Flowable<List<ApiNote>> =
+        todayNoteDatasource.getAllNotes(startDay, endDay)
 
     override fun getCountFinishTasks(startDay: Long, endDay: Long): Int =
         todayNoteDatasource.getCountFinishTasks(startDay, endDay)
@@ -29,8 +32,11 @@ class TodayNoteRepositoryImpl(private val todayNoteDatasource: TodayNoteDatasour
     override fun deleteNote(apiNote: ApiNote): Maybe<Int>? =
         todayNoteDatasource.deleteNote(apiNote)
 
-    override fun getNotFinishNotes(): LiveData<MutableList<ApiNote>>? =
+    override fun getNotFinishNotes(): Flowable<List<ApiNote>>? =
         todayNoteDatasource.getNotFinishNotes()
+
+    override fun searchNotes(searchText: String): Flowable<List<ApiNote>> =
+        todayNoteDatasource.searchNotes(searchText)
 
     override fun getCoefRatingForDays(): Double =
         todayNoteDatasource.getCoefRatingForDays()

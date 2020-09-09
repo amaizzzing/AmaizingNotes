@@ -12,7 +12,7 @@ class NoteMapper {
         fun apiNoteToNote(apiNote: ApiNote): Note =
             Note(
                 apiNote.id,
-                NoteType.NOTE.type,
+                apiNote.typeNote,
                 SimpleDateFormat(FULL_DATE_PATTERN, Locale.ROOT).format(apiNote.date),
                 apiNote.dateStart,
                 apiNote.dateEnd,
@@ -24,7 +24,7 @@ class NoteMapper {
         fun noteToApiNote(note: Note): ApiNote =
             ApiNote(
                 note.id,
-                NoteType.NOTE.type,
+                note.typeNote,
                 SimpleDateFormat(FULL_DATE_PATTERN, Locale.ROOT).parse(note.date).time,
                 note.dateStart,
                 note.dateEnd,

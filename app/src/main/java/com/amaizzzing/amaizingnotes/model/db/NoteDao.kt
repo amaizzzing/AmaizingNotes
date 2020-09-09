@@ -20,8 +20,11 @@ interface NoteDao {
     @Query("delete from api_note where id=:id1")
     fun deleteNoteById(id1: Long): Maybe<Int>
 
+    @Query("select * from api_note where typeNote=:typeRecord and date between :startDay and :endDay order by isDone,date desc")
+    fun getTodayNotes(startDay: Long, endDay: Long, typeRecord:String): Flowable<List<ApiNote>>
+
     @Query("select * from api_note where date between :startDay and :endDay order by isDone,date desc")
-    fun getTodayNotes(startDay: Long, endDay: Long): Flowable<List<ApiNote>>
+    fun getAllNotes(startDay: Long, endDay: Long): Flowable<List<ApiNote>>
 
     @Query("select count(id) from api_note where isDone=1 and date between :startDay and :endDay")
     fun getCountFinishTasks(startDay: Long, endDay: Long): Int
@@ -29,8 +32,11 @@ interface NoteDao {
     @Query("select * from api_note where id=:id1")
     fun getNoteById(id1: Long): Maybe<ApiNote>
 
-    @Query("select * from api_note where isDone=0 order by date desc")
-    fun getNotFinishNotes(): LiveData<MutableList<ApiNote>>
+    @Query("select * from api_note where isDone=0 and typeNote='task' order by date desc")
+    fun getNotFinishNotes(): Flowable<List<ApiNote>>
+
+    @Query("select * from api_note where nameNote like lower(:searchText) or text like lower(:searchText)")
+    fun searchNotes(searchText:String): Flowable<List<ApiNote>>
 
     /*
     * запрос на подсчет разницы среднего количества выполненных задач за прошедшие дни и выполненных за сегодняшний день

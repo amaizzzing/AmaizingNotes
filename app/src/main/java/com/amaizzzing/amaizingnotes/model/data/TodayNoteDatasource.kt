@@ -14,13 +14,17 @@ interface TodayNoteDatasource {
 
     fun deleteNoteById(id1: Long): Maybe<Int>?
 
-    fun getTodayNote(startDay: Long, endDay: Long): Flowable<List<ApiNote>>?
+    fun getTodayNote(startDay: Long, endDay: Long, typeRecord:String): Flowable<List<ApiNote>>?
+
+    fun getAllNotes(startDay: Long, endDay: Long): Flowable<List<ApiNote>>
 
     fun getCountFinishTasks(startDay: Long, endDay: Long) : Int
 
     fun getNoteById(id1: Long): Maybe<ApiNote>?
 
-    fun getNotFinishNotes(): LiveData<MutableList<ApiNote>>?
+    fun getNotFinishNotes(): Flowable<List<ApiNote>>?
+
+    fun searchNotes(searchText:String): Flowable<List<ApiNote>>
 
     fun getCoefRatingForDays(): Double
 }

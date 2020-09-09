@@ -6,7 +6,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".view.fragments.ResultsFragment">
+    <ProgressBar
+        android:id="@+id/pb_results_fragment"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
     <LinearLayout
+        android:id="@+id/ll_rating_results_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -29,13 +36,13 @@
                     android:id="@+id/count_notes_day_fragment_results"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="36dp"
+                    android:textSize="@dimen/text_36sp"
                     android:layout_gravity="center"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Задач за день"
-                    android:textSize="12dp"
+                    android:textSize="@dimen/margin_10dp"
                     android:layout_gravity="center"/>
                 <RatingBar
                     android:id="@+id/rat_bar_days_fragment_results"
@@ -65,13 +72,13 @@
                     android:id="@+id/count_notes_week_fragment_results"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="36dp"
+                    android:textSize="@dimen/text_36sp"
                     android:layout_gravity="center"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Задач за неделю"
-                    android:textSize="12dp"
+                    android:textSize="@dimen/margin_10dp"
                     android:layout_gravity="center"/>
                 <RatingBar
                     android:id="@+id/rat_bar_weeks_fragment_results"
@@ -101,13 +108,13 @@
                     android:id="@+id/count_notes_month_fragment_results"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="36dp"
+                    android:textSize="@dimen/text_36sp"
                     android:layout_gravity="center"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Задач за месяц"
-                    android:textSize="12dp"
+                    android:textSize="@dimen/margin_10dp"
                     android:layout_gravity="center"/>
                 <RatingBar
                     android:id="@+id/rat_bar_months_fragment_results"

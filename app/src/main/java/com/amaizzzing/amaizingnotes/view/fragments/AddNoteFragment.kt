@@ -6,8 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -16,12 +15,13 @@ import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
 import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.Note
+import com.amaizzzing.amaizingnotes.model.entities.NoteType
 import com.amaizzzing.amaizingnotes.utils.DATE_PATTERN
 import com.amaizzzing.amaizingnotes.utils.TIME_PATTERN
+import com.amaizzzing.amaizingnotes.view.view_states.AddNoteViewState
 import com.amaizzzing.amaizingnotes.viewmodel.AddNoteViewModel
 import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.add_note_fragment.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,6 +35,10 @@ class AddNoteFragment : Fragment() {
     private lateinit var dateTextViewAddNoteFragment: TextView
     private lateinit var etNameNoteAddNoteFragment: TextInputEditText
     private lateinit var etTextNoteAddNoteFragment: TextInputEditText
+    private lateinit var llContentAddNoteFragment: LinearLayout
+    private lateinit var pbAddNoteFragment: FrameLayout
+    private lateinit var radbutNoteAddNoteFragment: RadioButton
+    private lateinit var radbutTaskAddNoteFragment: RadioButton
 
     private var calendarDateTime = Calendar.getInstance()
 
@@ -63,23 +67,52 @@ class AddNoteFragment : Fragment() {
             .clearModule(ClearModule())
             .build()
         comp2.injectToAddNoteFragment(this)
-        viewModel = ViewModelProvider(this,factory)[AddNoteViewModel::class.java]
+        viewModel = ViewModelProvider(this, factory)[AddNoteViewModel::class.java]
 
         initViews(root)
         initListeners()
 
         idFromHomeFragment = arguments?.getLong(getString(R.string.current_note))
-        initAndShowViews()
 
         return root
     }
 
-    private fun initAndShowViews() {
-        if (idFromHomeFragment == -1L) {
-            fillDefaultDateAndTime()
+    private fun renderUI(addNoteViewState: AddNoteViewState) {
+        renderError(addNoteViewState.error)
+        renderProgress()
+        renderNote(addNoteViewState.note)
+    }
+
+    private fun renderNote(note: Note?) {
+        llContentAddNoteFragment.visibility = View.VISIBLE
+        pbAddNoteFragment.visibility = View.GONE
+        if (note != null) {
+            fillViewsFromDB(note)
         } else {
-            fillWithNoteDateAndTime()
+            fillDefaultDateAndTime()
         }
+    }
+
+    private fun renderProgress() {
+        llContentAddNoteFragment.visibility = View.GONE
+        pbAddNoteFragment.visibility = View.VISIBLE
+    }
+
+    private fun renderError(error: Throwable?) {
+        if (error != null) {
+            Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        compositeDisposable.add(
+            viewModel.getChosenNote(idFromHomeFragment!!)
+                ?.subscribe(
+                    { renderUI(it) },
+                    { renderUI(AddNoteViewState(false, Throwable(), null)) },
+                    { renderUI(AddNoteViewState(false, null, null)) })!!
+        )
     }
 
     private fun fillDefaultDateAndTime() {
@@ -89,18 +122,18 @@ class AddNoteFragment : Fragment() {
             SimpleDateFormat(TIME_PATTERN, Locale.ROOT).format(calendarDateTime.time.time)
     }
 
-    private fun fillWithNoteDateAndTime() {
-        compositeDisposable.add(
-            viewModel.getChosenNote(idFromHomeFragment!!)
-                ?.subscribeBy { note -> fillViewsFromDB(note) }!!
-        )
-    }
-
     private fun fillViewsFromDB(noteFromDb: Note) {
         dateTextViewAddNoteFragment.text = noteFromDb.date.split(" ")[0]
         timeTextViewAddNoteFragment.text = noteFromDb.date.split(" ")[1]
         etNameNoteAddNoteFragment.setText(noteFromDb.nameNote)
         etTextNoteAddNoteFragment.setText(noteFromDb.text)
+        if (noteFromDb.typeNote == NoteType.NOTE.type) {
+            radbutNoteAddNoteFragment.isChecked = true
+            radbutTaskAddNoteFragment.isChecked = false
+        } else {
+            radbutNoteAddNoteFragment.isChecked = false
+            radbutTaskAddNoteFragment.isChecked = true
+        }
     }
 
     private fun initViews(v: View) {
@@ -111,6 +144,10 @@ class AddNoteFragment : Fragment() {
         dateTextViewAddNoteFragment = v.date_text_view_add_note_fragment
         etNameNoteAddNoteFragment = v.et_name_note_add_note_fragment
         etTextNoteAddNoteFragment = v.et_text_note_add_note_fragment
+        llContentAddNoteFragment = v.ll_content_add_note_fragment
+        pbAddNoteFragment = v.pb_add_note_fragment
+        radbutNoteAddNoteFragment = v.radbut_note_add_note_fragment
+        radbutTaskAddNoteFragment = v.radbut_task_add_note_fragment
     }
 
     private fun initListeners() {
@@ -118,6 +155,7 @@ class AddNoteFragment : Fragment() {
             viewModel.insertNote(
                 ApiNote(
                     id = idFromHomeFragment!!,
+                    typeNote = if (radbutNoteAddNoteFragment.isChecked) NoteType.NOTE.type else NoteType.TASK.type,
                     date = calendarDateTime.time.time,
                     nameNote = etNameNoteAddNoteFragment.text.toString(),
                     text = etTextNoteAddNoteFragment.text.toString()

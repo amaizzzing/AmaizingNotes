@@ -23,4 +23,10 @@
     <string name="time_start">Время начала</string>
     <string name="time_end">Время окончания</string>
     <string name="time">Время</string>
+    <string name="note">Заметка</string>
+    <string name="task">Задача</string>
+    <string name="all">Все</string>
+    <string name="week">На неделю</string>
+    <string name="month">На месяц</string>
+
 </resources>
