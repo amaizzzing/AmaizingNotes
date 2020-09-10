@@ -19,6 +19,7 @@ import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
 import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.utils.SPAN_COUNT_RV
+import com.amaizzzing.amaizingnotes.view.base.BaseViewState
 import com.amaizzzing.amaizingnotes.view.view_states.NotFinishViewState
 import com.amaizzzing.amaizingnotes.viewmodel.NotFinishViewModel
 import kotlinx.android.synthetic.main.fragment_not_finish.view.*
@@ -50,17 +51,17 @@ class NotFinishFragment : Fragment() {
         notFinishViewModel =
             ViewModelProvider(this, factory).get(NotFinishViewModel::class.java)
 
-        notFinishViewModel.listNotFinishNotes.observe(viewLifecycleOwner, Observer {
+        notFinishViewModel.getViewState().observe(viewLifecycleOwner, Observer {
             renderUI(it)
         })
 
         return root
     }
 
-    private fun renderUI(noteViewState: NotFinishViewState) {
+    private fun renderUI(noteViewState: BaseViewState<MutableList<Note>>) {
         renderProgress(noteViewState.isLoading)
         renderError(noteViewState.error)
-        renderNoteList(noteViewState.notes)
+        renderNoteList(noteViewState.data)
     }
 
     private fun renderError(error: Throwable?) {

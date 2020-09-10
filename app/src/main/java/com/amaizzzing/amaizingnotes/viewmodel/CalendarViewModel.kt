@@ -1,15 +1,20 @@
 package com.amaizzzing.amaizingnotes.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.model.entities.NoteType
 import com.amaizzzing.amaizingnotes.model.interactors.TodayNotesInteractor
 import com.amaizzzing.amaizingnotes.model.mappers.NoteMapper
 import com.amaizzzing.amaizingnotes.utils.getEndDay
 import com.amaizzzing.amaizingnotes.utils.getStartDay
+import com.amaizzzing.amaizingnotes.view.base.BaseViewModel
+import com.amaizzzing.amaizingnotes.view.base.BaseViewState
 import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
@@ -17,8 +22,11 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
-class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor) : ViewModel() {
-    var someDaysLiveData: MutableLiveData<CalendarNoteViewState> = MutableLiveData()
+const val LENGTH_STR_TO_SEARCH = 3
+
+class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor) :
+    BaseViewModel<MutableList<Note>,CalendarNoteViewState<MutableList<Note>>>() {
+    //var someDaysLiveData: MutableLiveData<BaseViewState<MutableList<Note>>> = MutableLiveData()
     private var compositeDisposable = CompositeDisposable()
     private var dis: Disposable? = null
 
@@ -26,16 +34,15 @@ class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor
         range: Long = Date().getEndDay(Calendar.getInstance().time.time),
         noteType: NoteType
     ) {
-        if (dis != null) compositeDisposable.remove(dis!!)
+        if (dis != null) {compositeDisposable.remove(dis!!);compositeDisposable.remove(dis!!)}
         val defaultTime = Calendar.getInstance().time.time
-        var flowNotes: Flowable<MutableList<Note>>?
-        if (noteType == NoteType.ALL) {
-            flowNotes = interactor.getAllNotes(
+        val flowNotes = if (noteType == NoteType.ALL) {
+            interactor.getAllNotes(
                 Date().getStartDay(defaultTime),
                 Date().getEndDay(defaultTime + range)
             )
         } else {
-            flowNotes = interactor.getTodayNotes(
+            interactor.getTodayNotes(
                 Date().getStartDay(defaultTime),
                 Date().getEndDay(defaultTime + range),
                 noteType.type
@@ -43,23 +50,25 @@ class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor
         }
         dis = flowNotes
             ?.map { it -> CalendarNoteViewState(false, null, it) }
-            ?.startWith(CalendarNoteViewState(true, null, null))
+            ?.startWith(CalendarNoteViewState<MutableList<Note>>(true, null, null))
             ?.onErrorReturn { CalendarNoteViewState(false, it, null) }
             ?.subscribeBy { noteViewState ->
-                someDaysLiveData.value = noteViewState
+                viewStateLiveData.value = noteViewState
             }!!
         compositeDisposable.add(dis!!)
     }
 
     fun searchNotes(searchText: String) {
-        compositeDisposable.add(interactor.searchNotes("%$searchText%")
-            .map { CalendarNoteViewState(false, null, it) }
-            .startWith(CalendarNoteViewState(true, null, null))
-            .onErrorReturn { CalendarNoteViewState(false, it, null) }
-            .subscribeBy { noteViewState ->
-                someDaysLiveData.value = noteViewState
-            }
-        )
+        if(searchText.length>=LENGTH_STR_TO_SEARCH) {
+            compositeDisposable.add(interactor.searchNotes("%$searchText%")
+                .map { CalendarNoteViewState(false, null, it) }
+                .startWith(CalendarNoteViewState<MutableList<Note>>(true, null, null))
+                .onErrorReturn { CalendarNoteViewState(false, it, null) }
+                .subscribeBy { noteViewState ->
+                    viewStateLiveData.value = noteViewState
+                }
+            )
+        }
     }
 
     fun updateNote(note: Note) {

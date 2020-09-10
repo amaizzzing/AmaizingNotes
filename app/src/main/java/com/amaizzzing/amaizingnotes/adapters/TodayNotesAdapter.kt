@@ -32,14 +32,14 @@ class TodayNotesAdapter(var items: List<Note>, val callback: Callback) :
 
         fun bind(item: Note) {
             with(item) {
-                timeTodayNotesItem.text = date
+                timeTodayNotesItem.text = dateFormatted
                 nameTodayNotesItem.text = nameNote
                 textTodayNotesItem.text = text
 
-                if(item.typeNote==NoteType.TASK.type){
+                if (item.typeNote == NoteType.TASK.type) {
                     chkbxTodayNotesItem.visibility = View.VISIBLE
 
-                }else{
+                } else {
                     chkbxTodayNotesItem.visibility = View.GONE
                 }
                 typeNotesitem.text = item.typeNote

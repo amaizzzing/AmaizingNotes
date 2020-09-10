@@ -13,6 +13,7 @@ class NoteMapper {
             Note(
                 apiNote.id,
                 apiNote.typeNote,
+                apiNote.date,
                 SimpleDateFormat(FULL_DATE_PATTERN, Locale.ROOT).format(apiNote.date),
                 apiNote.dateStart,
                 apiNote.dateEnd,
@@ -25,7 +26,7 @@ class NoteMapper {
             ApiNote(
                 note.id,
                 note.typeNote,
-                SimpleDateFormat(FULL_DATE_PATTERN, Locale.ROOT).parse(note.date).time,
+                note.date,
                 note.dateStart,
                 note.dateEnd,
                 note.nameNote,

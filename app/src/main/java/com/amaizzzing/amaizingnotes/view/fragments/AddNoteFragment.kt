@@ -18,7 +18,7 @@ import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.model.entities.NoteType
 import com.amaizzzing.amaizingnotes.utils.DATE_PATTERN
 import com.amaizzzing.amaizingnotes.utils.TIME_PATTERN
-import com.amaizzzing.amaizingnotes.view.view_states.AddNoteViewState
+import com.amaizzzing.amaizingnotes.view.base.BaseViewState
 import com.amaizzzing.amaizingnotes.viewmodel.AddNoteViewModel
 import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.disposables.CompositeDisposable
@@ -77,10 +77,10 @@ class AddNoteFragment : Fragment() {
         return root
     }
 
-    private fun renderUI(addNoteViewState: AddNoteViewState) {
+    private fun renderUI(addNoteViewState: BaseViewState<Note>) {
         renderError(addNoteViewState.error)
         renderProgress()
-        renderNote(addNoteViewState.note)
+        renderNote(addNoteViewState.data)
     }
 
     private fun renderNote(note: Note?) {
@@ -110,8 +110,8 @@ class AddNoteFragment : Fragment() {
             viewModel.getChosenNote(idFromHomeFragment!!)
                 ?.subscribe(
                     { renderUI(it) },
-                    { renderUI(AddNoteViewState(false, Throwable(), null)) },
-                    { renderUI(AddNoteViewState(false, null, null)) })!!
+                    { renderUI(BaseViewState(false, Throwable(), null)) },
+                    { renderUI(BaseViewState(false, null, null)) })!!
         )
     }
 
@@ -123,8 +123,8 @@ class AddNoteFragment : Fragment() {
     }
 
     private fun fillViewsFromDB(noteFromDb: Note) {
-        dateTextViewAddNoteFragment.text = noteFromDb.date.split(" ")[0]
-        timeTextViewAddNoteFragment.text = noteFromDb.date.split(" ")[1]
+        dateTextViewAddNoteFragment.text = noteFromDb.dateFormatted.split(" ")[0]
+        timeTextViewAddNoteFragment.text = noteFromDb.dateFormatted.split(" ")[1]
         etNameNoteAddNoteFragment.setText(noteFromDb.nameNote)
         etTextNoteAddNoteFragment.setText(noteFromDb.text)
         if (noteFromDb.typeNote == NoteType.NOTE.type) {

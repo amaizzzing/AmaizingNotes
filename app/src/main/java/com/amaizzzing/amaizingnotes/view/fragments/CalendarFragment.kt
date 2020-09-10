@@ -8,7 +8,6 @@ import android.widget.*
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -25,31 +24,38 @@ import com.amaizzzing.amaizingnotes.utils.DAYS_0_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.DAYS_30_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.DAYS_7_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.SPAN_COUNT_RV
+import com.amaizzzing.amaizingnotes.view.base.BaseFragment
 import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import com.amaizzzing.amaizingnotes.viewmodel.CalendarViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_calendar.view.*
 import javax.inject.Inject
 
-class CalendarFragment : Fragment() {
+class CalendarFragment :
+    BaseFragment<MutableList<Note>, CalendarNoteViewState<MutableList<Note>>>() {
+    override val viewModel: CalendarViewModel by lazy {
+        ViewModelProvider(this, factory).get(CalendarViewModel::class.java)
+    }
+    override val layoutRes: Int = R.layout.fragment_calendar
+
     @Inject
     lateinit var factory: ViewModelProvider.Factory
-    lateinit var calendarViewModel: CalendarViewModel
+    //lateinit var calendarViewModel: CalendarViewModel
 
     private lateinit var rvFragmentCalendar: RecyclerView
     private lateinit var fabButtonFragmentCalendar: FloatingActionButton
     private lateinit var pbFragmentCalendar: ProgressBar
-    private lateinit var menuCalendarFragment:ImageView
-    private lateinit var llChooseRangeFragmentCalendar:LinearLayout
-    private lateinit var radbutAllCalendarFragment:RadioButton
-    private lateinit var radbutNotesCalendarFragment:RadioButton
-    private lateinit var radbutTasksCalendarFragment:RadioButton
-    private lateinit var radbutTodayCalendarFragment:RadioButton
-    private lateinit var radbutWeekCalendarFragment:RadioButton
-    private lateinit var radbutMonthCalendarFragment:RadioButton
-    private lateinit var radbutAlltimeCalendarFragment:RadioButton
-    private lateinit var filterFragmentCalendar:ImageView
-    private lateinit var searchNoteFragmentCalendar:SearchView
+    private lateinit var menuCalendarFragment: ImageView
+    private lateinit var llChooseRangeFragmentCalendar: LinearLayout
+    private lateinit var radbutAllCalendarFragment: RadioButton
+    private lateinit var radbutNotesCalendarFragment: RadioButton
+    private lateinit var radbutTasksCalendarFragment: RadioButton
+    private lateinit var radbutTodayCalendarFragment: RadioButton
+    private lateinit var radbutWeekCalendarFragment: RadioButton
+    private lateinit var radbutMonthCalendarFragment: RadioButton
+    private lateinit var radbutAlltimeCalendarFragment: RadioButton
+    private lateinit var filterFragmentCalendar: ImageView
+    private lateinit var searchNoteFragmentCalendar: SearchView
 
     private lateinit var todayNotesAdapter: TodayNotesAdapter
     private lateinit var navController: NavController
@@ -69,18 +75,18 @@ class CalendarFragment : Fragment() {
             .build()
         comp2.injectToCalendarFragment(this)
 
-        calendarViewModel = ViewModelProvider(this, factory).get(CalendarViewModel::class.java)
-        calendarViewModel.someDaysLiveData.observe(viewLifecycleOwner, Observer {
+        //calendarViewModel = ViewModelProvider(this, factory).get(CalendarViewModel::class.java)
+        viewModel.viewStateLiveData.observe(viewLifecycleOwner, Observer {
             renderUI(it)
         })
 
         return root
     }
 
-    private fun renderUI(noteViewState: CalendarNoteViewState) {
-        renderError(noteViewState.error)
-        renderProgress(noteViewState.isLoading)
-        renderNoteList(noteViewState.notes)
+    override fun renderUI(data: CalendarNoteViewState<MutableList<Note>>) {
+        renderError(data.error)
+        renderProgress(data.isLoading)
+        renderNoteList(data.data)
     }
 
     private fun renderNoteList(notes: List<Note>?) {
@@ -133,9 +139,9 @@ class CalendarFragment : Fragment() {
             geNotesByRange(radbutAlltimeCalendarFragment)
         }
         menuCalendarFragment.setOnClickListener {
-                val pop= PopupMenu(it.context, it)
-                pop.inflate(R.menu.popup_menu_calendar_fragment)
-                pop.show()
+            val pop = PopupMenu(it.context, it)
+            pop.inflate(R.menu.popup_menu_calendar_fragment)
+            pop.show()
         }
 
         fabButtonFragmentCalendar.setOnClickListener {
@@ -143,20 +149,20 @@ class CalendarFragment : Fragment() {
         }
 
         filterFragmentCalendar.setOnClickListener {
-            if(llChooseRangeFragmentCalendar.visibility==View.GONE){
+            if (llChooseRangeFragmentCalendar.visibility == View.GONE) {
                 llChooseRangeFragmentCalendar.visibility = View.VISIBLE
-            }else{
-                llChooseRangeFragmentCalendar.visibility=View.GONE
+            } else {
+                llChooseRangeFragmentCalendar.visibility = View.GONE
             }
         }
 
-        searchNoteFragmentCalendar.setOnQueryTextListener(object : OnQueryTextListener{
+        searchNoteFragmentCalendar.setOnQueryTextListener(object : OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                calendarViewModel.searchNotes(newText!!)
+                viewModel.searchNotes(newText!!)
                 return true
             }
 
@@ -164,9 +170,9 @@ class CalendarFragment : Fragment() {
     }
 
     private fun getNotesByNoteType(noteType: NoteType) {
-        if(noteType==NoteType.ALL){
+        if (noteType == NoteType.ALL) {
             val range =
-                when{
+                when {
                     radbutTodayCalendarFragment.isChecked -> getRangeForFilter(
                         radbutTodayCalendarFragment
                     )
@@ -181,25 +187,25 @@ class CalendarFragment : Fragment() {
                     )
                     else -> 0L
                 }
-            calendarViewModel.getSomeDays(range,NoteType.ALL)
-        }else {
+            viewModel.getSomeDays(range, NoteType.ALL)
+        } else {
             when {
-                radbutTodayCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+                radbutTodayCalendarFragment.isChecked -> viewModel.getSomeDays(
                     getRangeForFilter(
                         radbutTodayCalendarFragment
                     ), noteType
                 )
-                radbutWeekCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+                radbutWeekCalendarFragment.isChecked -> viewModel.getSomeDays(
                     getRangeForFilter(
                         radbutWeekCalendarFragment
                     ), noteType
                 )
-                radbutMonthCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+                radbutMonthCalendarFragment.isChecked -> viewModel.getSomeDays(
                     getRangeForFilter(
                         radbutMonthCalendarFragment
                     ), noteType
                 )
-                radbutAlltimeCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+                radbutAlltimeCalendarFragment.isChecked -> viewModel.getSomeDays(
                     getRangeForFilter(
                         radbutAlltimeCalendarFragment
                     ), noteType
@@ -210,17 +216,17 @@ class CalendarFragment : Fragment() {
 
     private fun geNotesByRange(radioButton: RadioButton) {
         when {
-            radbutAllCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+            radbutAllCalendarFragment.isChecked -> viewModel.getSomeDays(
                 getRangeForFilter(
                     radioButton
                 ), NoteType.ALL
             )
-            radbutNotesCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+            radbutNotesCalendarFragment.isChecked -> viewModel.getSomeDays(
                 getRangeForFilter(
                     radioButton
                 ), NoteType.NOTE
             )
-            radbutTasksCalendarFragment.isChecked -> calendarViewModel.getSomeDays(
+            radbutTasksCalendarFragment.isChecked -> viewModel.getSomeDays(
                 getRangeForFilter(
                     radioButton
                 ), NoteType.TASK
@@ -228,8 +234,8 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    private fun getRangeForFilter(radioButton: RadioButton):Long =
-        when(radioButton){
+    private fun getRangeForFilter(radioButton: RadioButton): Long =
+        when (radioButton) {
             radbutAlltimeCalendarFragment -> Int.MAX_VALUE.toLong()
             radbutTodayCalendarFragment -> DAYS_0_IN_MILLIS
             radbutWeekCalendarFragment -> DAYS_7_IN_MILLIS
@@ -256,7 +262,7 @@ class CalendarFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        calendarViewModel.getSomeDays(0L,NoteType.ALL)
+        viewModel.getSomeDays(0L, NoteType.ALL)
     }
 
     private fun initRecyclerView(notesList: List<Note>) {
@@ -272,11 +278,13 @@ class CalendarFragment : Fragment() {
 
             override fun onChcbxChecked(item: Note, isChecked: Boolean) {
                 item.isDone = isChecked
-                calendarViewModel.updateNote(item)
+                viewModel.updateNote(item)
             }
         })
         rvFragmentCalendar.layoutManager = GridLayoutManager(context, SPAN_COUNT_RV)
         todayNotesAdapter.items = notesList
         rvFragmentCalendar.adapter = todayNotesAdapter
     }
+
+
 }
