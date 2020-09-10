@@ -10,6 +10,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.amaizzzing.amaizingnotes.BottomDialog
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
@@ -73,6 +74,10 @@ class AddNoteFragment : Fragment() {
         initListeners()
 
         idFromHomeFragment = arguments?.getLong(getString(R.string.current_note))
+
+        val bottomDialog: BottomDialog =
+            BottomDialog().newInstance()
+        parentFragmentManager.let { bottomDialog.show(it,"o") }
 
         return root
     }

@@ -24,8 +24,12 @@
         android:layout_marginTop="@dimen/margin_7dp"
         android:layout_marginBottom="@dimen/margin_7dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        >
+        app:layout_constraintEnd_toEndOf="parent">
+        <ImageView
+            android:layout_width="@dimen/image_size_40dp"
+            android:layout_height="@dimen/image_size_40dp"
+            android:layout_marginEnd="@dimen/margin_25dp"
+            android:src="@drawable/ic_gradient_24"/>
         <ImageView
             android:id="@+id/btn_delete_add_note_fragment"
             android:layout_width="@dimen/image_size_40dp"

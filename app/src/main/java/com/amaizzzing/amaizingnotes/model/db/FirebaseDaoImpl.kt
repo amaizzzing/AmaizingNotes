@@ -140,9 +140,7 @@ class FirebaseDaoImpl : TodayNoteDatasource {
 
     override fun updateNote(note: ApiNote): Maybe<Int> = insertNote(note).map { it.toInt() }
 
-    override fun deleteNote(apiNote: ApiNote): Maybe<Int>? {
-        TODO("Not yet implemented")
-    }
+    override fun deleteNote(apiNote: ApiNote): Maybe<Int>? = deleteNoteById(apiNote.id)
 
     override fun deleteNoteById(id1: Long): Maybe<Int> {
         return Maybe.create { emitter ->

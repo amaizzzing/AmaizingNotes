@@ -1,7 +1,5 @@
 package com.amaizzzing.amaizingnotes.model.interactors
 
-import androidx.lifecycle.LiveData
-import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.model.mappers.NoteMapper
@@ -26,7 +24,11 @@ class TodayNotesInteractorImpl(private val todayNoteRepository: TodayNoteReposit
     override fun deleteNoteById(id1: Long): Maybe<Int>? =
         todayNoteRepository.deleteNoteById(id1)
 
-    override fun getTodayNotes(startDay: Long, endDay: Long, typeRecord:String): Flowable<MutableList<Note>>? =
+    override fun getTodayNotes(
+        startDay: Long,
+        endDay: Long,
+        typeRecord: String
+    ): Flowable<MutableList<Note>>? =
         todayNoteRepository.getTodayNote(startDay, endDay, typeRecord)
             ?.map { it -> NoteMapper.listApiNoteToListNote(it) }
             ?.subscribeOn(Schedulers.io())
@@ -34,7 +36,7 @@ class TodayNotesInteractorImpl(private val todayNoteRepository: TodayNoteReposit
 
     override fun getAllNotes(startDay: Long, endDay: Long): Flowable<MutableList<Note>> =
         todayNoteRepository.getAllNotes(startDay, endDay)
-            .map { it -> NoteMapper.listApiNoteToListNote(it) }
+            .map { NoteMapper.listApiNoteToListNote(it) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 
