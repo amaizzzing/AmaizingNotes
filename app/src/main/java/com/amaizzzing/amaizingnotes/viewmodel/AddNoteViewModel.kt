@@ -13,11 +13,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
+const val DEFAULT_ID = -1L
+
 class AddNoteViewModel @Inject constructor(var interactor: TodayNotesInteractor) :
     BaseViewModel<Note,AddNoteViewState<Note>>() {
     fun insertNote(apiNote: ApiNote) {
-        if (apiNote.id == -1L) {
-            apiNote.id = 0L
+        if (apiNote.id == DEFAULT_ID) {
+            apiNote.id = apiNote.date
             interactor.insertNote(apiNote)
                 ?.subscribeOn(Schedulers.io())
                 ?.subscribe()

@@ -1,5 +1,6 @@
 package com.amaizzzing.amaizingnotes.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
@@ -21,6 +22,8 @@ import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
+const val LENGTH_STR_TO_SEARCH = 3
+
 class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor) :
     BaseViewModel<MutableList<Note>,CalendarNoteViewState<MutableList<Note>>>() {
     //var someDaysLiveData: MutableLiveData<BaseViewState<MutableList<Note>>> = MutableLiveData()
@@ -31,17 +34,15 @@ class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor
         range: Long = Date().getEndDay(Calendar.getInstance().time.time),
         noteType: NoteType
     ) {
-        interactor.insertNote(ApiNote(1,"task",1111111,111111,11111,"ololo","ololo",false))
-        if (dis != null) compositeDisposable.remove(dis!!)
+        if (dis != null) {compositeDisposable.remove(dis!!);compositeDisposable.remove(dis!!)}
         val defaultTime = Calendar.getInstance().time.time
-        var flowNotes: Flowable<MutableList<Note>>?
-        if (noteType == NoteType.ALL) {
-            flowNotes = interactor.getAllNotes(
+        val flowNotes = if (noteType == NoteType.ALL) {
+            interactor.getAllNotes(
                 Date().getStartDay(defaultTime),
                 Date().getEndDay(defaultTime + range)
             )
         } else {
-            flowNotes = interactor.getTodayNotes(
+            interactor.getTodayNotes(
                 Date().getStartDay(defaultTime),
                 Date().getEndDay(defaultTime + range),
                 noteType.type
@@ -58,14 +59,16 @@ class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor
     }
 
     fun searchNotes(searchText: String) {
-        compositeDisposable.add(interactor.searchNotes("%$searchText%")
-            .map { CalendarNoteViewState(false, null, it) }
-            .startWith(CalendarNoteViewState<MutableList<Note>>(true, null, null))
-            .onErrorReturn { CalendarNoteViewState(false, it, null) }
-            .subscribeBy { noteViewState ->
-                viewStateLiveData.value = noteViewState
-            }
-        )
+        if(searchText.length>=LENGTH_STR_TO_SEARCH) {
+            compositeDisposable.add(interactor.searchNotes("%$searchText%")
+                .map { CalendarNoteViewState(false, null, it) }
+                .startWith(CalendarNoteViewState<MutableList<Note>>(true, null, null))
+                .onErrorReturn { CalendarNoteViewState(false, it, null) }
+                .subscribeBy { noteViewState ->
+                    viewStateLiveData.value = noteViewState
+                }
+            )
+        }
     }
 
     fun updateNote(note: Note) {

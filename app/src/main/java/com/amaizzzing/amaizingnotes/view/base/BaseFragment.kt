@@ -27,9 +27,9 @@ abstract class BaseFragment<T,S : BaseViewState<T>> : Fragment() {
         val root = inflater.inflate(layoutRes, container, false)
 
         //viewModel = ViewModelProvider(this, factory).get(CalendarViewModel::class.java)
-        viewModel.getViewState().observe(viewLifecycleOwner, Observer {
-            renderUI(it)
-        })
+        //viewModel.getViewState().observe(viewLifecycleOwner, Observer {
+        //    renderUI(it)
+        //})
 
         return root
     }
