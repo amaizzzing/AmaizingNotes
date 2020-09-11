@@ -2,10 +2,7 @@ package com.amaizzzing.amaizingnotes.viewmodel.viewmodel_factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.amaizzzing.amaizingnotes.viewmodel.AddNoteViewModel
-import com.amaizzzing.amaizingnotes.viewmodel.CalendarViewModel
-import com.amaizzzing.amaizingnotes.viewmodel.NotFinishViewModel
-import com.amaizzzing.amaizingnotes.viewmodel.ResultsViewModel
+import com.amaizzzing.amaizingnotes.viewmodel.*
 
 import dagger.Binds
 import dagger.Module
@@ -32,7 +29,12 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(ResultsViewModel::class)
-    abstract fun bindResultsViewModel(notFinishViewModel: ResultsViewModel): ViewModel
+    abstract fun bindResultsViewModel(resultsViewModel: ResultsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SplashViewModel::class)
+    abstract fun bindSplashViewModel(splashViewModel: SplashViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

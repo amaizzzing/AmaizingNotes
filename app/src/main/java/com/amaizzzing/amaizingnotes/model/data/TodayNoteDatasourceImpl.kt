@@ -1,7 +1,9 @@
 package com.amaizzzing.amaizingnotes.model.data
 
+import androidx.lifecycle.LiveData
 import com.amaizzzing.amaizingnotes.NotesApplication
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
+import com.amaizzzing.amaizingnotes.model.entities.User
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 
@@ -40,4 +42,10 @@ class TodayNoteDatasourceImpl : TodayNoteDatasource {
 
     override fun getCoefRatingForDays(): Double =
         dataSource.getCoefRatingForDays()
+
+    override fun getCurrentUser(): LiveData<User?> =
+        dataSource.getCurrentUser()
+
+    override fun subscribeToAllUserNotes(): Flowable<List<ApiNote>> =
+        dataSource.subscribeToAllUserNotes()
 }

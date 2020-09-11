@@ -1,6 +1,8 @@
 package com.amaizzzing.amaizingnotes.model.di.components
 
+import android.app.Activity
 import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
+import com.amaizzzing.amaizingnotes.view.activities.SplashActivity
 import com.amaizzzing.amaizingnotes.view.fragments.AddNoteFragment
 import com.amaizzzing.amaizingnotes.view.fragments.CalendarFragment
 import com.amaizzzing.amaizingnotes.view.fragments.NotFinishFragment
@@ -20,4 +22,5 @@ interface Component2 {
     fun injectToAddNoteFragment(fragment: AddNoteFragment)
     fun injectToNotFinishFragment(fragment: NotFinishFragment)
     fun injectToResultsFragment(fragment: ResultsFragment)
+    fun injectToSplashActivity(activity:SplashActivity)
 }

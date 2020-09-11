@@ -2,6 +2,7 @@ package com.amaizzzing.amaizingnotes.model.repositories
 
 import androidx.lifecycle.LiveData
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
+import com.amaizzzing.amaizingnotes.model.entities.User
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 
@@ -27,4 +28,6 @@ interface TodayNoteRepository {
     fun searchNotes(searchText:String): Flowable<List<ApiNote>>
 
     fun getCoefRatingForDays(): Double
+
+    fun getCurrentUser():LiveData<User?>
 }

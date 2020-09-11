@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.entities.Note
+import com.amaizzzing.amaizingnotes.model.entities.User
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 
@@ -29,4 +30,6 @@ interface TodayNotesInteractor {
     fun searchNotes(searchText:String): Flowable<MutableList<Note>>
 
     fun getCoefRatingForDays() : Float
+
+    fun getCurrentUser():LiveData<User?>
 }

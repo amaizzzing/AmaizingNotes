@@ -44,8 +44,8 @@ class NotesApplication : Application() {
             resources.getString(R.string.description_notifications_channel)
         )
 
-        db = FirebaseFirestore.getInstance()
-        notesReference = db.collection(DB_NAME)
+        //db = FirebaseFirestore.getInstance()
+        //notesReference = db.collection(DB_NAME)
     }
 
 
@@ -53,7 +53,7 @@ class NotesApplication : Application() {
 
     fun getNotificationManager() = notificationChannel.notificationManager
 
-    fun getFirebaseNotesReference() = notesReference
+    //fun getFirebaseNotesReference() = notesReference
 
     companion object {
         lateinit var instance: NotesApplication private set

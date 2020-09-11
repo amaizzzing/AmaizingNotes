@@ -3,6 +3,7 @@ package com.amaizzzing.amaizingnotes.model.repositories
 import androidx.lifecycle.LiveData
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.data.TodayNoteDatasource
+import com.amaizzzing.amaizingnotes.model.entities.User
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 
@@ -40,4 +41,7 @@ class TodayNoteRepositoryImpl(private val todayNoteDatasource: TodayNoteDatasour
 
     override fun getCoefRatingForDays(): Double =
         todayNoteDatasource.getCoefRatingForDays()
+
+    override fun getCurrentUser(): LiveData<User?> =
+        todayNoteDatasource.getCurrentUser()
 }

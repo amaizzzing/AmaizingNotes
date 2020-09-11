@@ -65,13 +65,13 @@ class NotFinishFragment : Fragment() {
     }
 
     private fun renderError(error: Throwable?) {
-        if (error != null) {
+        error?.let {
             Toast.makeText(context, "ERROR!", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun renderNoteList(notes: List<Note>?) {
-        if (notes != null) {
+        notes?.let {
             initRecyclerView(notes)
         }
     }

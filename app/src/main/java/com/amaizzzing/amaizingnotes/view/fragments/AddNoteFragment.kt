@@ -40,6 +40,7 @@ class AddNoteFragment : Fragment() {
     private lateinit var pbAddNoteFragment: FrameLayout
     private lateinit var radbutNoteAddNoteFragment: RadioButton
     private lateinit var radbutTaskAddNoteFragment: RadioButton
+    private lateinit var imgChooseBackAddNoteFragment:ImageView
 
     private var calendarDateTime = Calendar.getInstance()
 
@@ -74,10 +75,6 @@ class AddNoteFragment : Fragment() {
         initListeners()
 
         idFromHomeFragment = arguments?.getLong(getString(R.string.current_note))
-
-        val bottomDialog: BottomDialog =
-            BottomDialog().newInstance()
-        parentFragmentManager.let { bottomDialog.show(it,"o") }
 
         return root
     }
@@ -153,9 +150,16 @@ class AddNoteFragment : Fragment() {
         pbAddNoteFragment = v.pb_add_note_fragment
         radbutNoteAddNoteFragment = v.radbut_note_add_note_fragment
         radbutTaskAddNoteFragment = v.radbut_task_add_note_fragment
+        imgChooseBackAddNoteFragment = v.img_choose_back_add_note_fragment
     }
 
     private fun initListeners() {
+        imgChooseBackAddNoteFragment.setOnClickListener {
+            val bottomDialog: BottomDialog =
+                BottomDialog().newInstance()
+            parentFragmentManager.let { bottomDialog.show(it,"o") }
+        }
+
         btnOkAddNoteFragment.setOnClickListener {
             viewModel.insertNote(
                 ApiNote(

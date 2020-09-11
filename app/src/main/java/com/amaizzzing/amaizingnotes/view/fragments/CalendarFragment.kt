@@ -1,7 +1,10 @@
 package com.amaizzzing.amaizingnotes.view.fragments
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -16,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.adapters.TodayNotesAdapter
+import com.amaizzzing.amaizingnotes.model.NoAuthException
 import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
 import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.Note
@@ -24,9 +28,11 @@ import com.amaizzzing.amaizingnotes.utils.DAYS_0_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.DAYS_30_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.DAYS_7_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.SPAN_COUNT_RV
+import com.amaizzzing.amaizingnotes.view.activities.SplashActivity
 import com.amaizzzing.amaizingnotes.view.base.BaseFragment
 import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import com.amaizzzing.amaizingnotes.viewmodel.CalendarViewModel
+import com.firebase.ui.auth.AuthUI
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_calendar.view.*
 import javax.inject.Inject
@@ -89,8 +95,14 @@ class CalendarFragment :
         renderNoteList(data.data)
     }
 
+    private fun renderError(error: Throwable?) {
+        error?.let {
+            Toast.makeText(context, "ERROR!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun renderNoteList(notes: List<Note>?) {
-        if (notes != null) {
+        notes?.let {
             initRecyclerView(notes)
         }
     }
@@ -102,12 +114,6 @@ class CalendarFragment :
         } else {
             pbFragmentCalendar.visibility = View.GONE
             rvFragmentCalendar.visibility = View.VISIBLE
-        }
-    }
-
-    private fun renderError(error: Throwable?) {
-        if (error != null) {
-            Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -141,6 +147,18 @@ class CalendarFragment :
         menuCalendarFragment.setOnClickListener {
             val pop = PopupMenu(it.context, it)
             pop.inflate(R.menu.popup_menu_calendar_fragment)
+            pop.setOnMenuItemClickListener { item: MenuItem? ->
+
+                when (item!!.itemId) {
+                    R.id.settings -> {
+                        Toast.makeText(context, item.title, Toast.LENGTH_SHORT).show()
+                    }
+                    R.id.log_out -> {
+                        onLogout()
+                    }
+                }
+                true
+            }
             pop.show()
         }
 
@@ -167,6 +185,15 @@ class CalendarFragment :
             }
 
         })
+    }
+
+    fun onLogout() {
+        AuthUI.getInstance()
+            .signOut(requireContext())
+            .addOnCompleteListener {
+                startActivity(Intent(requireContext(), SplashActivity::class.java))
+                //finish()
+            }
     }
 
     private fun getNotesByNoteType(noteType: NoteType) {
@@ -285,6 +312,4 @@ class CalendarFragment :
         todayNotesAdapter.items = notesList
         rvFragmentCalendar.adapter = todayNotesAdapter
     }
-
-
 }

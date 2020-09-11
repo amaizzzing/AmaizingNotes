@@ -26,6 +26,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
         <ImageView
+            android:id="@+id/img_choose_back_add_note_fragment"
             android:layout_width="@dimen/image_size_40dp"
             android:layout_height="@dimen/image_size_40dp"
             android:layout_marginEnd="@dimen/margin_25dp"
