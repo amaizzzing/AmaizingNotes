@@ -18,6 +18,8 @@ import com.amaizzzing.amaizingnotes.viewmodel.SplashViewModel
 import com.firebase.ui.auth.AuthUI
 import javax.inject.Inject
 
+const val REQUEST_CODE = 4242
+
 class SplashActivity : AppCompatActivity() {
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -26,7 +28,6 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_main)
 
         val comp2 = DaggerComponent2.builder()
             .clearModule(ClearModule())
@@ -61,7 +62,7 @@ class SplashActivity : AppCompatActivity() {
             .setAvailableProviders(providers)
             .build()
 
-        startActivityForResult(intent, 4242)
+        startActivityForResult(intent, REQUEST_CODE)
 
     }
     protected fun renderError(error: Throwable?) {
@@ -87,24 +88,4 @@ class SplashActivity : AppCompatActivity() {
     protected fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
-
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 4242 && resultCode != Activity.RESULT_OK) {
-            //finish()
-        }
-    }
-    fun showLogoutDialog() {
-        parentFragmentManager.findFragmentByTag(LogoutDialog.TAG) ?: LogoutDialog.createInstance {
-            onLogout()
-        }.show(parentFragmentManager, LogoutDialog.TAG)
-    }
-
-    fun onLogout() {
-        AuthUI.getInstance()
-            .signOut(this)
-            .addOnCompleteListener {
-                startActivity(Intent(this, SplashActivity::class.java))
-                finish()
-            }
-    }*/
 }

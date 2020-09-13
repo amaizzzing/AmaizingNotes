@@ -30,6 +30,4 @@ interface TodayNoteDatasource {
     fun getCoefRatingForDays(): Double
 
     fun getCurrentUser():LiveData<User?>
-
-    fun subscribeToAllUserNotes(): Flowable<List<ApiNote>>
 }

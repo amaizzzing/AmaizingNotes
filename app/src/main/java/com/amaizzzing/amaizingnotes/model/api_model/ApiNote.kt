@@ -18,5 +18,6 @@ data class ApiNote(
     val dateEnd: Long = 0,
     val nameNote: String = DEFAULT_NOTE_NAME,
     val text: String = DEFAULT_NOTE_TEXT,
-    var isDone: Boolean = false
+    var isDone: Boolean = false,
+    var background:Int = 0
 )

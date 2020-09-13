@@ -59,7 +59,7 @@ interface NoteDao : TodayNoteDatasource{
         TODO("Not yet implemented")
     }
 
-    override fun subscribeToAllUserNotes(): Flowable<List<ApiNote>> {
+    /*override fun subscribeToAllUserNotes(start: Long, end: Long): Flowable<List<ApiNote>> {
         TODO("Not yet implemented")
-    }
+    }*/
 }

@@ -45,7 +45,4 @@ class TodayNoteDatasourceImpl : TodayNoteDatasource {
 
     override fun getCurrentUser(): LiveData<User?> =
         dataSource.getCurrentUser()
-
-    override fun subscribeToAllUserNotes(): Flowable<List<ApiNote>> =
-        dataSource.subscribeToAllUserNotes()
 }

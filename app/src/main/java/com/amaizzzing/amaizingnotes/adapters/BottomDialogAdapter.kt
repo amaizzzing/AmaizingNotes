@@ -9,18 +9,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.model.entities.Note
 
-class BottomDialogAdapter(var items:List<Int>/*,val callback : Callback*/):
+class BottomDialogAdapter(var items:List<Int>,val callback : Callback):
     RecyclerView.Adapter<BottomDialogAdapter.BottomViewHolder>() {
 
     inner class BottomViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         private val imgBottomDialog = itemView.findViewById<ImageView>(R.id.img_bottom_dialog)
         fun bind(item:Int){
             imgBottomDialog.setImageResource(item)
+            imgBottomDialog.setOnClickListener {
+                callback.onItemClicked(items[adapterPosition])
+            }
         }
     }
 
     interface Callback {
-        fun onItemClicked(item: Note)
+        fun onItemClicked(item: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

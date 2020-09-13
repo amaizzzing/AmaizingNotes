@@ -21,4 +21,5 @@ const val DEFAULT_NOTE_TEXT = "Текст задачи"
 
 const val NOTE_TYPE_VALUE = "note"
 const val TASK_TYPE_VALUE = "task"
+const val DATE_TYPE = "data"
 
