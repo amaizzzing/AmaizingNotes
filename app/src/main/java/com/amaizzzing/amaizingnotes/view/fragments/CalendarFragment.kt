@@ -2,6 +2,7 @@ package com.amaizzzing.amaizingnotes.view.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -17,7 +18,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.adapters.TodayNotesAdapter
-import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
 import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.model.entities.NoteType
@@ -32,8 +32,12 @@ import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import com.amaizzzing.amaizingnotes.viewmodel.CalendarViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_calendar.view.*
+import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import javax.inject.Inject
 
 class CalendarFragment :
@@ -41,9 +45,10 @@ class CalendarFragment :
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
-    override val viewModel: CalendarViewModel by lazy {
+    /*override val viewModel: CalendarViewModel by lazy {
         ViewModelProvider(this, factory).get(CalendarViewModel::class.java)
-    }
+    }*/
+    override val viewModel: CalendarViewModel by viewModel()
     override val layoutRes: Int = R.layout.fragment_calendar
     override val rootView: View by lazy {
         this.layoutInflater.inflate(R.layout.fragment_calendar, container, false)
@@ -74,11 +79,10 @@ class CalendarFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val comp2 = DaggerComponent2.builder()
+        /*val comp2 = DaggerComponent2.builder()
             .clearModule(ClearModule())
             .build()
-        comp2.injectToCalendarFragment(this)
-
+        comp2.injectToCalendarFragment(this)*/
         super.onCreateView(inflater, container, savedInstanceState)
 
         return rootView

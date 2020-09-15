@@ -20,14 +20,14 @@ const val TEXT_KEY_TO_SEARCH = "text"
 const val ID_KEY_TO_SEARCH = "id"
 const val DONE_KEY = "done"
 
-class FirebaseDaoImpl : TodayNoteDatasource {
+class FirebaseDaoImpl(val store:FirebaseFirestore,val auth:FirebaseAuth) : TodayNoteDatasource {
     companion object {
         private const val NOTES_COLLECTION = "amaizing_notes"
         private const val USER_COLLECTION = "users"
     }
 
-    private val store by lazy { FirebaseFirestore.getInstance() }
-    private val auth by lazy { FirebaseAuth.getInstance() }
+    //private val store by lazy { FirebaseFirestore.getInstance() }
+    //private val auth by lazy { FirebaseAuth.getInstance() }
 
     private val currentUser
         get() = auth.currentUser

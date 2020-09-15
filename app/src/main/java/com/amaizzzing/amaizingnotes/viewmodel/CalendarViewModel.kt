@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 const val LENGTH_STR_TO_SEARCH = 3
 
-class CalendarViewModel @Inject constructor(var interactor: TodayNotesInteractor) :
+class CalendarViewModel /*@Inject constructor*/(var interactor: TodayNotesInteractor) :
     BaseViewModel<MutableList<Note>,CalendarNoteViewState<MutableList<Note>>>() {
     private var compositeDisposable = CompositeDisposable()
     private var dis: Disposable? = null

@@ -6,12 +6,15 @@ import com.amaizzzing.amaizingnotes.model.db.AppDatabase
 import com.amaizzzing.amaizingnotes.model.db.FirebaseDaoImpl
 import com.amaizzzing.amaizingnotes.model.di.components.DaggerDiNotesComponent
 import com.amaizzzing.amaizingnotes.model.di.components.DiNotesComponent
+import com.amaizzzing.amaizingnotes.model.di.koin.appModule
+import com.amaizzzing.amaizingnotes.model.di.koin.calendarFragmentModule
 import com.amaizzzing.amaizingnotes.model.di.modules.AppDatabaseModule
 import com.amaizzzing.amaizingnotes.model.di.modules.NoteNotificationModule
 import com.amaizzzing.amaizingnotes.utils.DB_NAME
 import com.amaizzzing.amaizingnotes.utils.MyNotificationChannel
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import org.koin.android.ext.android.startKoin
 import javax.inject.Inject
 
 class NotesApplication : Application() {
@@ -23,7 +26,7 @@ class NotesApplication : Application() {
     @Inject
     lateinit var appDataBase: AppDatabase
 
-    val fireBaseDao: FirebaseDaoImpl = FirebaseDaoImpl()
+    //val fireBaseDao: FirebaseDaoImpl = FirebaseDaoImpl()
 
     override fun onCreate() {
         super.onCreate()
@@ -35,6 +38,8 @@ class NotesApplication : Application() {
             .noteNotificationModule(NoteNotificationModule())
             .build()
         noteComponent.injectDiApplication(this)
+
+        startKoin(this, listOf(appModule, calendarFragmentModule))
 
         notificationChannel.createNotificationChannel(
             resources.getString(R.string.id_notifications_channel),

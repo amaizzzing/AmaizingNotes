@@ -11,10 +11,10 @@ import dagger.multibindings.IntoMap
 @Suppress("unused")
 @Module
 abstract class ViewModelModule {
-    @Binds
+    /*@Binds
     @IntoMap
     @ViewModelKey(CalendarViewModel::class)
-    abstract fun bindCalendarViewModel(calendarViewModel: CalendarViewModel): ViewModel
+    abstract fun bindCalendarViewModel(calendarViewModel: CalendarViewModel): ViewModel*/
 
     @Binds
     @IntoMap
