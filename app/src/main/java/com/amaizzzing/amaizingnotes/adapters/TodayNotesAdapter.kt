@@ -29,12 +29,15 @@ class TodayNotesAdapter(var items: List<Note>, val callback: Callback) :
         private val nameTodayNotesItem = itemView.findViewById<TextView>(R.id.name_today_notes_item)
         private val chkbxTodayNotesItem = itemView.chkbx_today_notes_item
         private val typeNotesitem = itemView.type_notes_item
+        private var cvMainTodayNoteItem = itemView.cv_main_today_note_item
 
         fun bind(item: Note) {
             with(item) {
                 timeTodayNotesItem.text = dateFormatted
                 nameTodayNotesItem.text = nameNote
                 textTodayNotesItem.text = text
+                if(background!=0)
+                cvMainTodayNoteItem.background = cvMainTodayNoteItem.context.getDrawable(background)
 
                 if (item.typeNote == NoteType.TASK.type) {
                     chkbxTodayNotesItem.visibility = View.VISIBLE

@@ -1,14 +1,15 @@
 package com.amaizzzing.amaizingnotes.view.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -24,25 +25,33 @@ import com.amaizzzing.amaizingnotes.utils.DAYS_0_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.DAYS_30_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.DAYS_7_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.SPAN_COUNT_RV
+import com.amaizzzing.amaizingnotes.view.activities.SplashActivity
 import com.amaizzzing.amaizingnotes.view.base.BaseFragment
+import com.amaizzzing.amaizingnotes.view.dialogs.LogoutDialog
 import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import com.amaizzzing.amaizingnotes.viewmodel.CalendarViewModel
+import com.firebase.ui.auth.AuthUI
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_calendar.view.*
 import javax.inject.Inject
 
 class CalendarFragment :
-    BaseFragment<MutableList<Note>, CalendarNoteViewState<MutableList<Note>>>() {
+    BaseFragment<MutableList<Note>, CalendarNoteViewState<MutableList<Note>>>(){
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
+
     override val viewModel: CalendarViewModel by lazy {
         ViewModelProvider(this, factory).get(CalendarViewModel::class.java)
     }
     override val layoutRes: Int = R.layout.fragment_calendar
+    override val rootView: View by lazy {
+        this.layoutInflater.inflate(R.layout.fragment_calendar, container, false)
+    }
 
-    @Inject
-    lateinit var factory: ViewModelProvider.Factory
-    //lateinit var calendarViewModel: CalendarViewModel
-
-    private lateinit var rvFragmentCalendar: RecyclerView
+    val rvFragmentCalendar: RecyclerView by lazy {
+        rootView.rv_fragment_calendar
+    }
     private lateinit var fabButtonFragmentCalendar: FloatingActionButton
     private lateinit var pbFragmentCalendar: ProgressBar
     private lateinit var menuCalendarFragment: ImageView
@@ -65,22 +74,14 @@ class CalendarFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_calendar, container, false)
-
-        initViews(root)
-        initListeners()
-
         val comp2 = DaggerComponent2.builder()
             .clearModule(ClearModule())
             .build()
         comp2.injectToCalendarFragment(this)
 
-        //calendarViewModel = ViewModelProvider(this, factory).get(CalendarViewModel::class.java)
-        viewModel.viewStateLiveData.observe(viewLifecycleOwner, Observer {
-            renderUI(it)
-        })
+        super.onCreateView(inflater, container, savedInstanceState)
 
-        return root
+        return rootView
     }
 
     override fun renderUI(data: CalendarNoteViewState<MutableList<Note>>) {
@@ -89,10 +90,16 @@ class CalendarFragment :
         renderNoteList(data.data)
     }
 
-    private fun renderNoteList(notes: List<Note>?) {
-        if (notes != null) {
-            initRecyclerView(notes)
+    private fun renderError(error: Throwable?) {
+        error?.let {
+            Toast.makeText(context, "ERROR!", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun renderNoteList(notes: List<Note>?) {
+        notes?.let {
+            initRecyclerView(notes)
+        } ?: initRecyclerView(listOf())
     }
 
     private fun renderProgress(loading: Boolean) {
@@ -105,18 +112,12 @@ class CalendarFragment :
         }
     }
 
-    private fun renderError(error: Throwable?) {
-        if (error != null) {
-            Toast.makeText(context, "${error.message}", Toast.LENGTH_LONG).show()
-        }
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         navController = findNavController()
     }
 
-    private fun initListeners() {
+    override fun initListeners() {
         radbutAllCalendarFragment.setOnClickListener {
             getNotesByNoteType(NoteType.ALL)
         }
@@ -141,6 +142,17 @@ class CalendarFragment :
         menuCalendarFragment.setOnClickListener {
             val pop = PopupMenu(it.context, it)
             pop.inflate(R.menu.popup_menu_calendar_fragment)
+            pop.setOnMenuItemClickListener { item: MenuItem? ->
+                when (item!!.itemId) {
+                    R.id.settings -> {
+                        Toast.makeText(context, item.title, Toast.LENGTH_SHORT).show()
+                    }
+                    R.id.log_out -> {
+                        showLogoutDialog().let { true }
+                    }
+                }
+                true
+            }
             pop.show()
         }
 
@@ -165,8 +177,21 @@ class CalendarFragment :
                 viewModel.searchNotes(newText!!)
                 return true
             }
-
         })
+    }
+
+    fun showLogoutDialog() {
+        parentFragmentManager.findFragmentByTag(LogoutDialog.TAG) ?: LogoutDialog.createInstance {
+            onLogout()
+        }.show(parentFragmentManager, LogoutDialog.TAG)
+    }
+
+    fun onLogout() {
+        AuthUI.getInstance()
+            .signOut(requireContext())
+            .addOnCompleteListener {
+                startActivity(Intent(requireContext(), SplashActivity::class.java))
+            }
     }
 
     private fun getNotesByNoteType(noteType: NoteType) {
@@ -243,9 +268,9 @@ class CalendarFragment :
             else -> 0L
         }
 
-    private fun initViews(v: View) {
+    override fun initViews(v: View) {
         menuCalendarFragment = v.menu_fragment_calendar
-        rvFragmentCalendar = v.rv_fragment_calendar
+
         fabButtonFragmentCalendar = v.fab_button_fragment_calendar
         pbFragmentCalendar = v.pb_fragment_calendar
         llChooseRangeFragmentCalendar = v.ll_choose_range_fragment_calendar
@@ -285,6 +310,4 @@ class CalendarFragment :
         todayNotesAdapter.items = notesList
         rvFragmentCalendar.adapter = todayNotesAdapter
     }
-
-
 }

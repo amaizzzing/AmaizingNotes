@@ -5,7 +5,6 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_not_finish">Not_finish</string>
 
-
     <string name="title_calendar">Календарь</string>
     <string name="title_today">Сегодня</string>
     <string name="title_settings">Настройки</string>
@@ -29,4 +28,8 @@
     <string name="week">На неделю</string>
     <string name="month">На месяц</string>
 
+    <string name="logout_title">"Выход из аккаунта"</string>
+    <string name="logout_message">"Вы уверерны?"</string>
+    <string name="yes">"да"</string>
+    <string name="no">"нет"</string>
 </resources>

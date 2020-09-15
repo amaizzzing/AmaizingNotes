@@ -22,7 +22,6 @@ import javax.inject.Inject
 class ResultsViewModel @Inject constructor(var interactor: TodayNotesInteractor) :
     BaseViewModel<AllResults,ResultsViewState<AllResults>>() {
     private var resultsViewState: ResultsViewState<AllResults> = ResultsViewState(true, null, null)
-    //var results: MutableLiveData<BaseViewState<AllResults>> = MutableLiveData(resultsViewState)
     private var allResultsNotes = AllResults()
 
     init {

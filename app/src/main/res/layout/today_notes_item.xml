@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cv_HistoryFilterItem"
+    android:id="@+id/cv_main_today_note_item"
     android:layout_width="match_parent"
     android:layout_height="@dimen/height_note_item"
     card_view:cardCornerRadius="@dimen/margin_10dp"

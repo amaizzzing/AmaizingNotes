@@ -9,5 +9,6 @@ data class Note(
     val dateEnd: Long,
     val nameNote: String,
     val text: String,
-    var isDone: Boolean
+    var isDone: Boolean,
+    var background:Int
 )

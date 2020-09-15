@@ -2,12 +2,13 @@ package com.amaizzzing.amaizingnotes.view.fragments
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.amaizzzing.amaizingnotes.BottomDialog
@@ -18,17 +19,31 @@ import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.model.entities.NoteType
 import com.amaizzzing.amaizingnotes.utils.DATE_PATTERN
+import com.amaizzzing.amaizingnotes.utils.DATE_TYPE
 import com.amaizzzing.amaizingnotes.utils.TIME_PATTERN
-import com.amaizzzing.amaizingnotes.view.base.BaseViewState
+import com.amaizzzing.amaizingnotes.view.base.BaseFragment
+import com.amaizzzing.amaizingnotes.view.view_states.AddNoteViewState
 import com.amaizzzing.amaizingnotes.viewmodel.AddNoteViewModel
 import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.add_note_fragment.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class AddNoteFragment : Fragment() {
+
+class AddNoteFragment : BaseFragment<Note, AddNoteViewState<Note>>() {
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
+    override val viewModel: AddNoteViewModel by lazy {
+        ViewModelProvider(this, factory).get(AddNoteViewModel::class.java)
+    }
+    override val layoutRes: Int = R.layout.add_note_fragment
+    override val rootView: View by lazy {
+        this.layoutInflater.inflate(R.layout.add_note_fragment, container, false)
+    }
+
     private lateinit var btnOkAddNoteFragment: ImageView
     private lateinit var backAddNoteFragment: ImageView
     private lateinit var btnDeleteAddNoteFragment: ImageView
@@ -40,6 +55,7 @@ class AddNoteFragment : Fragment() {
     private lateinit var pbAddNoteFragment: FrameLayout
     private lateinit var radbutNoteAddNoteFragment: RadioButton
     private lateinit var radbutTaskAddNoteFragment: RadioButton
+    private lateinit var imgChooseBackAddNoteFragment: ImageView
 
     private var calendarDateTime = Calendar.getInstance()
 
@@ -51,9 +67,7 @@ class AddNoteFragment : Fragment() {
 
     private var idFromHomeFragment: Long? = -1L
 
-    @Inject
-    lateinit var factory: ViewModelProvider.Factory
-    private lateinit var viewModel: AddNoteViewModel
+    private var noteBackground = 0
 
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -62,30 +76,21 @@ class AddNoteFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.add_note_fragment, container, false)
-
         val comp2 = DaggerComponent2.builder()
             .clearModule(ClearModule())
             .build()
         comp2.injectToAddNoteFragment(this)
-        viewModel = ViewModelProvider(this, factory)[AddNoteViewModel::class.java]
-
-        initViews(root)
-        initListeners()
+        super.onCreateView(inflater, container, savedInstanceState)
 
         idFromHomeFragment = arguments?.getLong(getString(R.string.current_note))
 
-        val bottomDialog: BottomDialog =
-            BottomDialog().newInstance()
-        parentFragmentManager.let { bottomDialog.show(it,"o") }
-
-        return root
+        return rootView
     }
 
-    private fun renderUI(addNoteViewState: BaseViewState<Note>) {
-        renderError(addNoteViewState.error)
+    override fun renderUI(data: AddNoteViewState<Note>) {
+        renderError(data.error)
         renderProgress()
-        renderNote(addNoteViewState.data)
+        renderNote(data.data)
     }
 
     private fun renderNote(note: Note?) {
@@ -111,12 +116,10 @@ class AddNoteFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        fillDefaultDateAndTime()
         compositeDisposable.add(
             viewModel.getChosenNote(idFromHomeFragment!!)
-                ?.subscribe(
-                    { renderUI(it) },
-                    { renderUI(BaseViewState(false, Throwable(), null)) },
-                    { renderUI(BaseViewState(false, null, null)) })!!
+                ?.subscribe { renderUI(it) }!!
         )
     }
 
@@ -139,9 +142,10 @@ class AddNoteFragment : Fragment() {
             radbutNoteAddNoteFragment.isChecked = false
             radbutTaskAddNoteFragment.isChecked = true
         }
+        setBackgroundNote(noteFromDb.background)
     }
 
-    private fun initViews(v: View) {
+    override fun initViews(v: View) {
         btnOkAddNoteFragment = v.btn_ok_add_note_fragment
         btnDeleteAddNoteFragment = v.btn_delete_add_note_fragment
         backAddNoteFragment = v.back_add_note_fragment
@@ -153,9 +157,16 @@ class AddNoteFragment : Fragment() {
         pbAddNoteFragment = v.pb_add_note_fragment
         radbutNoteAddNoteFragment = v.radbut_note_add_note_fragment
         radbutTaskAddNoteFragment = v.radbut_task_add_note_fragment
+        imgChooseBackAddNoteFragment = v.img_choose_back_add_note_fragment
     }
 
-    private fun initListeners() {
+    override fun initListeners() {
+        imgChooseBackAddNoteFragment.setOnClickListener {
+            val bottomDialog: BottomDialog = BottomDialog().newInstance()
+            bottomDialog.setTargetFragment(this, 1)
+            parentFragmentManager.let { bottomDialog.show(it, "bottomDialog") }
+        }
+
         btnOkAddNoteFragment.setOnClickListener {
             viewModel.insertNote(
                 ApiNote(
@@ -163,7 +174,8 @@ class AddNoteFragment : Fragment() {
                     typeNote = if (radbutNoteAddNoteFragment.isChecked) NoteType.NOTE.type else NoteType.TASK.type,
                     date = calendarDateTime.time.time,
                     nameNote = etNameNoteAddNoteFragment.text.toString(),
-                    text = etTextNoteAddNoteFragment.text.toString()
+                    text = etTextNoteAddNoteFragment.text.toString(),
+                    background = noteBackground
                 )
             )
             findNavController().popBackStack()
@@ -229,4 +241,23 @@ class AddNoteFragment : Fragment() {
         compositeDisposable.dispose()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1 && resultCode == 1) {
+            val resId = data?.getIntExtra(DATE_TYPE, -1)
+            resId?.let {
+                setBackgroundNote(resId)
+            }
+        }
+    }
+
+    private fun setBackgroundNote(resId: Int) {
+        noteBackground = resId
+        when (resId) {
+            0 -> llContentAddNoteFragment.setBackgroundColor(Color.WHITE)
+            else -> {
+                val dr = resources.getDrawable(resId)
+                llContentAddNoteFragment.background = dr
+            }
+        }
+    }
 }

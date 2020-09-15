@@ -1,5 +1,6 @@
 package com.amaizzzing.amaizingnotes.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.amaizzzing.amaizingnotes.model.entities.Note
@@ -15,7 +16,6 @@ import javax.inject.Inject
 
 class NotFinishViewModel @Inject constructor(private var interactor: TodayNotesInteractor) :
     BaseViewModel<MutableList<Note>,NotFinishViewState<MutableList<Note>>>() {
-    //var listNotFinishNotes: MutableLiveData<BaseViewState<MutableList<Note>>> = MutableLiveData()
     private var compositeDisposable = CompositeDisposable()
 
     init {
@@ -23,20 +23,31 @@ class NotFinishViewModel @Inject constructor(private var interactor: TodayNotesI
     }
 
     private fun getNotFinishNotesFromDB() {
-        compositeDisposable.add(interactor.getNotFinishNotes()
+        val list = interactor.getNotFinishNotes()
             ?.map { NotFinishViewState(false, null, it) }
             ?.startWith(NotFinishViewState<MutableList<Note>>(true, null, null))
             ?.onErrorReturn { NotFinishViewState(false, it, null) }
             ?.subscribeBy { notFinishViewState ->
                 viewStateLiveData.value = notFinishViewState
-            }!!
-        )
+            }
+        list?.let {
+            compositeDisposable.add(list)
+        }
+
     }
 
     fun updateNote(note: Note) {
-        interactor.updateNote(NoteMapper.noteToApiNote(note))
+        val upd = interactor.updateNote(NoteMapper.noteToApiNote(note))
+            ?.flatMapPublisher { interactor.getNotFinishNotes() }
+            ?.map { NotFinishViewState(false, null, it) }
+            ?.onErrorReturn { NotFinishViewState(false, it, null) }
             ?.subscribeOn(Schedulers.io())
-            ?.subscribe()
+            ?.subscribe(
+                {viewStateLiveData.value = it}
+            )
+            upd?.let {
+                compositeDisposable.add(upd)
+            }!!
     }
 
     override fun onCleared() {

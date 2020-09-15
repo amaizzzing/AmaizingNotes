@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -19,16 +17,25 @@ import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
 import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.utils.SPAN_COUNT_RV
-import com.amaizzzing.amaizingnotes.view.base.BaseViewState
+import com.amaizzzing.amaizingnotes.view.base.BaseFragment
 import com.amaizzzing.amaizingnotes.view.view_states.NotFinishViewState
 import com.amaizzzing.amaizingnotes.viewmodel.NotFinishViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_not_finish.view.*
 import javax.inject.Inject
 
-class NotFinishFragment : Fragment() {
+class NotFinishFragment :
+    BaseFragment<MutableList<Note>, NotFinishViewState<MutableList<Note>>>() {
     @Inject
     lateinit var factory: ViewModelProvider.Factory
-    private lateinit var notFinishViewModel: NotFinishViewModel
+    override val viewModel: NotFinishViewModel by lazy {
+        ViewModelProvider(this, factory).get(NotFinishViewModel::class.java)
+    }
+    override val layoutRes: Int = R.layout.fragment_not_finish
+    override val rootView: View by lazy {
+        this.layoutInflater.inflate(R.layout.fragment_not_finish, container, false)
+    }
+
     private lateinit var rvFragmentNotFinish: RecyclerView
     private lateinit var todayNotesAdapter: TodayNotesAdapter
     private lateinit var navController: NavController
@@ -39,41 +46,32 @@ class NotFinishFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_not_finish, container, false)
-
-        initViews(root)
-
         val comp2 = DaggerComponent2.builder()
             .clearModule(ClearModule())
             .build()
         comp2.injectToNotFinishFragment(this)
 
-        notFinishViewModel =
-            ViewModelProvider(this, factory).get(NotFinishViewModel::class.java)
+        super.onCreateView(inflater, container, savedInstanceState)
 
-        notFinishViewModel.getViewState().observe(viewLifecycleOwner, Observer {
-            renderUI(it)
-        })
-
-        return root
+        return rootView
     }
 
-    private fun renderUI(noteViewState: BaseViewState<MutableList<Note>>) {
-        renderProgress(noteViewState.isLoading)
-        renderError(noteViewState.error)
-        renderNoteList(noteViewState.data)
+    override fun renderUI(data: NotFinishViewState<MutableList<Note>>) {
+        renderProgress(data.isLoading)
+        renderError(data.error)
+        renderNoteList(data.data)
     }
 
     private fun renderError(error: Throwable?) {
-        if (error != null) {
+        error?.let {
             Toast.makeText(context, "ERROR!", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun renderNoteList(notes: List<Note>?) {
-        if (notes != null) {
+        notes?.let {
             initRecyclerView(notes)
-        }
+        } ?: initRecyclerView(listOf())
     }
 
     private fun renderProgress(isLoad: Boolean) {
@@ -91,7 +89,7 @@ class NotFinishFragment : Fragment() {
         navController = findNavController()
     }
 
-    private fun initViews(v: View) {
+    override fun initViews(v: View) {
         rvFragmentNotFinish = v.rv_fragment_not_finish
         pbNotFinishFragment = v.pb_not_finish_fragment
     }
@@ -109,10 +107,14 @@ class NotFinishFragment : Fragment() {
 
             override fun onChcbxChecked(item: Note, isChecked: Boolean) {
                 item.isDone = isChecked
-                notFinishViewModel.updateNote(item)
+                viewModel.updateNote(item)
             }
         })
         rvFragmentNotFinish.layoutManager = GridLayoutManager(context, SPAN_COUNT_RV)
         rvFragmentNotFinish.adapter = todayNotesAdapter
+    }
+
+    override fun initListeners() {
+
     }
 }

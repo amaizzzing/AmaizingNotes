@@ -23,8 +23,6 @@ class NotesApplication : Application() {
     @Inject
     lateinit var appDataBase: AppDatabase
 
-    lateinit var db: FirebaseFirestore
-    lateinit var notesReference: CollectionReference
     val fireBaseDao: FirebaseDaoImpl = FirebaseDaoImpl()
 
     override fun onCreate() {
@@ -43,17 +41,9 @@ class NotesApplication : Application() {
             resources.getString(R.string.name_notifications_channel),
             resources.getString(R.string.description_notifications_channel)
         )
-
-        db = FirebaseFirestore.getInstance()
-        notesReference = db.collection(DB_NAME)
     }
 
-
-    fun getAppDataBase(context: Context = applicationContext) = appDataBase
-
     fun getNotificationManager() = notificationChannel.notificationManager
-
-    fun getFirebaseNotesReference() = notesReference
 
     companion object {
         lateinit var instance: NotesApplication private set

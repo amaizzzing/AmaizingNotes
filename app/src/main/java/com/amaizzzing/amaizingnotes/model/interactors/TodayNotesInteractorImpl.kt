@@ -1,7 +1,9 @@
 package com.amaizzzing.amaizingnotes.model.interactors
 
+import androidx.lifecycle.LiveData
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.entities.Note
+import com.amaizzzing.amaizingnotes.model.entities.User
 import com.amaizzzing.amaizingnotes.model.mappers.NoteMapper
 import com.amaizzzing.amaizingnotes.model.repositories.TodayNoteRepository
 import io.reactivex.Flowable
@@ -66,4 +68,7 @@ class TodayNotesInteractorImpl(private val todayNoteRepository: TodayNoteReposit
             else -> 1f
         }
     }
+
+    override fun getCurrentUser(): LiveData<User?> =
+        todayNoteRepository.getCurrentUser()
 }

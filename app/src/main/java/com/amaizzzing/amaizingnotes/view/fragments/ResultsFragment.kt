@@ -12,15 +12,26 @@ import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
 import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.AllResults
+import com.amaizzzing.amaizingnotes.view.base.BaseFragment
 import com.amaizzzing.amaizingnotes.view.base.BaseViewState
 import com.amaizzzing.amaizingnotes.view.view_states.ResultsViewState
+import com.amaizzzing.amaizingnotes.viewmodel.AddNoteViewModel
 import com.amaizzzing.amaizingnotes.viewmodel.ResultsViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_results.view.*
 import javax.inject.Inject
 
-class ResultsFragment : Fragment() {
+class ResultsFragment : BaseFragment<AllResults,ResultsViewState<AllResults>>() {
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+    override val viewModel: ResultsViewModel by lazy {
+        ViewModelProvider(this, factory).get(ResultsViewModel::class.java)
+    }
+    override val layoutRes: Int = R.layout.fragment_results
+    override val rootView: View by lazy {
+        this.layoutInflater.inflate(R.layout.fragment_results, container, false)
+    }
+
     private lateinit var resultViewModel: ResultsViewModel
 
     private lateinit var countNotesDayFragmentResults: TextView
@@ -37,29 +48,28 @@ class ResultsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_results, container, false)
-
         val comp2 = DaggerComponent2.builder()
             .clearModule(ClearModule())
             .build()
         comp2.injectToResultsFragment(this)
+        super.onCreateView(inflater, container, savedInstanceState)
 
-        pbResultsFragment = root.pb_results_fragment
-        llRatingResultsFragment = root.ll_rating_results_fragment
-
-        resultViewModel =
-            ViewModelProvider(this, factory).get(ResultsViewModel::class.java)
-        resultViewModel.getViewState().observe(viewLifecycleOwner, Observer {
-            renderUI(it)
-        })
-
-        return root
+        return rootView
     }
 
-    private fun renderUI(resultsViewState: BaseViewState<AllResults>) {
-        renderProgress(resultsViewState.isLoading)
-        renderError(resultsViewState.error)
-        renderResults(resultsViewState.data)
+    override fun renderUI(data: ResultsViewState<AllResults>) {
+        renderProgress(data.isLoading)
+        renderError(data.error)
+        renderResults(data.data)
+    }
+
+    override fun initViews(v: View) {
+        pbResultsFragment = v.pb_results_fragment
+        llRatingResultsFragment = v.ll_rating_results_fragment
+    }
+
+    override fun initListeners() {
+
     }
 
     private fun renderResults(allResults: AllResults?) {

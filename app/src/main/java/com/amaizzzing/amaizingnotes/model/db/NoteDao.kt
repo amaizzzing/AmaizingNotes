@@ -1,8 +1,10 @@
 package com.amaizzzing.amaizingnotes.model.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.data.TodayNoteDatasource
+import com.amaizzzing.amaizingnotes.model.entities.User
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 
@@ -52,4 +54,12 @@ interface NoteDao : TodayNoteDatasource{
                 ")nested"
     )
     override fun getCoefRatingForDays(): Double
+
+    override fun getCurrentUser(): LiveData<User?> {
+        TODO("Not yet implemented")
+    }
+
+    /*override fun subscribeToAllUserNotes(start: Long, end: Long): Flowable<List<ApiNote>> {
+        TODO("Not yet implemented")
+    }*/
 }
