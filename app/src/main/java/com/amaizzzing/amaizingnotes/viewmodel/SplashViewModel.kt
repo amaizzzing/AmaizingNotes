@@ -9,7 +9,7 @@ import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import com.amaizzzing.amaizingnotes.view.view_states.SplashViewState
 import javax.inject.Inject
 
-class SplashViewModel @Inject constructor(var interactor: TodayNotesInteractor) :
+class SplashViewModel (val interactor: TodayNotesInteractor) :
     BaseViewModel<User,SplashViewState<User>>() {
     fun requestUser() {
         interactor.getCurrentUser().observeForever {

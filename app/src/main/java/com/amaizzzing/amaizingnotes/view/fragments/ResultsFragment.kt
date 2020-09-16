@@ -5,34 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.amaizzzing.amaizingnotes.R
-import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
-import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.AllResults
 import com.amaizzzing.amaizingnotes.view.base.BaseFragment
-import com.amaizzzing.amaizingnotes.view.base.BaseViewState
 import com.amaizzzing.amaizingnotes.view.view_states.ResultsViewState
-import com.amaizzzing.amaizingnotes.viewmodel.AddNoteViewModel
 import com.amaizzzing.amaizingnotes.viewmodel.ResultsViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_results.view.*
-import javax.inject.Inject
+import org.koin.android.viewmodel.ext.android.viewModel
 
-class ResultsFragment : BaseFragment<AllResults,ResultsViewState<AllResults>>() {
-    @Inject
-    lateinit var factory: ViewModelProvider.Factory
-    override val viewModel: ResultsViewModel by lazy {
-        ViewModelProvider(this, factory).get(ResultsViewModel::class.java)
-    }
+class ResultsFragment : BaseFragment<AllResults, ResultsViewState<AllResults>>() {
+    override val viewModel: ResultsViewModel by viewModel()
     override val layoutRes: Int = R.layout.fragment_results
     override val rootView: View by lazy {
         this.layoutInflater.inflate(R.layout.fragment_results, container, false)
     }
-
-    private lateinit var resultViewModel: ResultsViewModel
 
     private lateinit var countNotesDayFragmentResults: TextView
     private lateinit var countNotesWeekFragmentResults: TextView
@@ -48,10 +35,6 @@ class ResultsFragment : BaseFragment<AllResults,ResultsViewState<AllResults>>() 
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val comp2 = DaggerComponent2.builder()
-            .clearModule(ClearModule())
-            .build()
-        comp2.injectToResultsFragment(this)
         super.onCreateView(inflater, container, savedInstanceState)
 
         return rootView

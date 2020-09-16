@@ -16,25 +16,25 @@ abstract class ViewModelModule {
     @ViewModelKey(CalendarViewModel::class)
     abstract fun bindCalendarViewModel(calendarViewModel: CalendarViewModel): ViewModel*/
 
-    @Binds
+    /*@Binds
     @IntoMap
     @ViewModelKey(AddNoteViewModel::class)
-    abstract fun bindAddNoteViewModel(addNoteViewModel: AddNoteViewModel): ViewModel
+    abstract fun bindAddNoteViewModel(addNoteViewModel: AddNoteViewModel): ViewModel*/
 
-    @Binds
+    /*@Binds
     @IntoMap
     @ViewModelKey(NotFinishViewModel::class)
-    abstract fun bindNotFinishViewModel(notFinishViewModel: NotFinishViewModel): ViewModel
+    abstract fun bindNotFinishViewModel(notFinishViewModel: NotFinishViewModel): ViewModel*/
 
-    @Binds
+    /*@Binds
     @IntoMap
     @ViewModelKey(ResultsViewModel::class)
-    abstract fun bindResultsViewModel(resultsViewModel: ResultsViewModel): ViewModel
+    abstract fun bindResultsViewModel(resultsViewModel: ResultsViewModel): ViewModel*/
 
-    @Binds
+   /* @Binds
     @IntoMap
     @ViewModelKey(SplashViewModel::class)
-    abstract fun bindSplashViewModel(splashViewModel: SplashViewModel): ViewModel
+    abstract fun bindSplashViewModel(splashViewModel: SplashViewModel): ViewModel*/
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

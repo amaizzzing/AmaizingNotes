@@ -1,45 +1,24 @@
 package com.amaizzzing.amaizingnotes
 
 import android.app.Application
-import android.content.Context
-import com.amaizzzing.amaizingnotes.model.db.AppDatabase
-import com.amaizzzing.amaizingnotes.model.db.FirebaseDaoImpl
-import com.amaizzzing.amaizingnotes.model.di.components.DaggerDiNotesComponent
-import com.amaizzzing.amaizingnotes.model.di.components.DiNotesComponent
-import com.amaizzzing.amaizingnotes.model.di.koin.appModule
-import com.amaizzzing.amaizingnotes.model.di.koin.calendarFragmentModule
-import com.amaizzzing.amaizingnotes.model.di.modules.AppDatabaseModule
-import com.amaizzzing.amaizingnotes.model.di.modules.NoteNotificationModule
-import com.amaizzzing.amaizingnotes.utils.DB_NAME
+import com.amaizzzing.amaizingnotes.model.di.koin.*
 import com.amaizzzing.amaizingnotes.utils.MyNotificationChannel
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.startKoin
-import javax.inject.Inject
 
 class NotesApplication : Application() {
-    private lateinit var noteComponent: DiNotesComponent
+    private val notificationChannel: MyNotificationChannel by inject()
 
-    @Inject
-    lateinit var notificationChannel: MyNotificationChannel
-
-    @Inject
-    lateinit var appDataBase: AppDatabase
-
-    //val fireBaseDao: FirebaseDaoImpl = FirebaseDaoImpl()
+    private val moduleList = listOf(
+        appModule, calendarFragmentModule, addNoteFragmentModule,
+        notFinishViewModel, resultsViewModel, splashViewModel
+    )
 
     override fun onCreate() {
         super.onCreate()
         instance = this
 
-        noteComponent = DaggerDiNotesComponent
-            .builder()
-            .appDatabaseModule(AppDatabaseModule())
-            .noteNotificationModule(NoteNotificationModule())
-            .build()
-        noteComponent.injectDiApplication(this)
-
-        startKoin(this, listOf(appModule, calendarFragmentModule))
+        startKoin(this, moduleList)
 
         notificationChannel.createNotificationChannel(
             resources.getString(R.string.id_notifications_channel),

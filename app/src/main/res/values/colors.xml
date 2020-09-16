@@ -9,4 +9,8 @@
     <color name="invisible_color">#00FFFFFF</color>
     <color name="some_invisible_color">#99FFFFFF</color>
     <color name="transPrimary">#776200EE</color>
+    <color name="blue">#00FFFF</color>
+    <color name="green">#00FF00</color>
+    <color name="red">#FF0000</color>
+
 </resources>

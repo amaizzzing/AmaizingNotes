@@ -9,13 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.amaizzzing.amaizingnotes.BottomDialog
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
-import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
-import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.model.entities.NoteType
 import com.amaizzzing.amaizingnotes.utils.DATE_PATTERN
@@ -28,17 +25,15 @@ import com.google.android.material.textfield.TextInputEditText
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.add_note_fragment.view.*
+import org.koin.android.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
 
 class AddNoteFragment : BaseFragment<Note, AddNoteViewState<Note>>() {
-    @Inject
-    lateinit var factory: ViewModelProvider.Factory
-    override val viewModel: AddNoteViewModel by lazy {
-        ViewModelProvider(this, factory).get(AddNoteViewModel::class.java)
-    }
+    /*@Inject
+    lateinit var factory: ViewModelProvider.Factory*/
+    override val viewModel: AddNoteViewModel by viewModel()
     override val layoutRes: Int = R.layout.add_note_fragment
     override val rootView: View by lazy {
         this.layoutInflater.inflate(R.layout.add_note_fragment, container, false)
@@ -76,10 +71,10 @@ class AddNoteFragment : BaseFragment<Note, AddNoteViewState<Note>>() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val comp2 = DaggerComponent2.builder()
+        /*val comp2 = DaggerComponent2.builder()
             .clearModule(ClearModule())
             .build()
-        comp2.injectToAddNoteFragment(this)
+        comp2.injectToAddNoteFragment(this)*/
         super.onCreateView(inflater, container, savedInstanceState)
 
         idFromHomeFragment = arguments?.getLong(getString(R.string.current_note))
