@@ -21,15 +21,6 @@ class ResultsFragment : BaseFragment<AllResults, ResultsViewState<AllResults>>()
         this.layoutInflater.inflate(R.layout.fragment_results, container, false)
     }
 
-    private lateinit var countNotesDayFragmentResults: TextView
-    private lateinit var countNotesWeekFragmentResults: TextView
-    private lateinit var countNotesMonthFragmentResults: TextView
-    private lateinit var ratBarDaysFragmentResults: RatingBar
-    private lateinit var ratBarWeeksFragmentResults: RatingBar
-    private lateinit var ratBarMonthsFragmentResults: RatingBar
-    private lateinit var pbResultsFragment: ProgressBar
-    private lateinit var llRatingResultsFragment: LinearLayout
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,50 +37,35 @@ class ResultsFragment : BaseFragment<AllResults, ResultsViewState<AllResults>>()
         renderResults(data.data)
     }
 
-    override fun initViews(v: View) {
-        pbResultsFragment = v.pb_results_fragment
-        llRatingResultsFragment = v.ll_rating_results_fragment
-    }
-
     override fun initListeners() {
 
     }
 
     private fun renderResults(allResults: AllResults?) {
-        if (allResults != null) {
-            countNotesDayFragmentResults.text = allResults.dayResults.countTasks.toString()
-            countNotesWeekFragmentResults.text = allResults.day7Results.countTasks.toString()
-            countNotesMonthFragmentResults.text = allResults.day30Results.countTasks.toString()
-            ratBarDaysFragmentResults.rating = allResults.dayResults.rating
-            ratBarWeeksFragmentResults.rating = allResults.day7Results.rating
-            ratBarMonthsFragmentResults.rating = allResults.day30Results.rating
+        allResults?.let {
+            rootView.count_notes_day_fragment_results.text = allResults.dayResults.countTasks.toString()
+            rootView.count_notes_week_fragment_results.text = allResults.day7Results.countTasks.toString()
+            rootView.count_notes_month_fragment_results.text = allResults.day30Results.countTasks.toString()
+            rootView.rat_bar_days_fragment_results.rating = allResults.dayResults.rating
+            rootView.rat_bar_weeks_fragment_results.rating = allResults.day7Results.rating
+            rootView.rat_bar_months_fragment_results.rating = allResults.day30Results.rating
         }
 
     }
 
     private fun renderError(error: Throwable?) {
-        if (error != null) {
+        error?.let {
             Toast.makeText(context, "ERROR!", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun renderProgress(loading: Boolean) {
         if (loading) {
-            pbResultsFragment.visibility = View.VISIBLE
-            llRatingResultsFragment.visibility = View.GONE
+            rootView.pb_results_fragment.visibility = View.VISIBLE
+            rootView.ll_rating_results_fragment.visibility = View.GONE
         } else {
-            pbResultsFragment.visibility = View.GONE
-            llRatingResultsFragment.visibility = View.VISIBLE
+            rootView.pb_results_fragment.visibility = View.GONE
+            rootView.ll_rating_results_fragment.visibility = View.VISIBLE
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        countNotesDayFragmentResults = view.count_notes_day_fragment_results
-        countNotesWeekFragmentResults = view.count_notes_week_fragment_results
-        countNotesMonthFragmentResults = view.count_notes_month_fragment_results
-        ratBarDaysFragmentResults = view.rat_bar_days_fragment_results
-        ratBarWeeksFragmentResults = view.rat_bar_weeks_fragment_results
-        ratBarMonthsFragmentResults = view.rat_bar_months_fragment_results
     }
 }

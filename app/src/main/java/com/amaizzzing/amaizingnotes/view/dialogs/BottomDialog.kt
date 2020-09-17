@@ -1,4 +1,4 @@
-package com.amaizzzing.amaizingnotes
+package com.amaizzzing.amaizingnotes.view.dialogs
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.adapters.BottomDialogAdapter
 import com.amaizzzing.amaizingnotes.utils.DATE_TYPE
 import com.amaizzzing.amaizingnotes.view.custom_view.ColorPickerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
 
 
@@ -33,7 +33,8 @@ class BottomDialog : BottomSheetDialogFragment() {
                 R.drawable.back_note_4,
                 R.drawable.back_note_5,
                 R.drawable.back_note_6,
-                R.drawable.back_note_7),
+                R.drawable.back_note_7
+            ),
             object : BottomDialogAdapter.Callback {
                 override fun onItemClicked(item: Int) {
                     val intent = Intent()

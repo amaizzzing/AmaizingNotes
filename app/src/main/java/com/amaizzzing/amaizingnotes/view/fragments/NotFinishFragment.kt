@@ -4,12 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.adapters.TodayNotesAdapter
 import com.amaizzzing.amaizingnotes.model.entities.Note
@@ -29,10 +26,10 @@ class NotFinishFragment :
         this.layoutInflater.inflate(R.layout.fragment_not_finish, container, false)
     }
 
-    private lateinit var rvFragmentNotFinish: RecyclerView
     private lateinit var todayNotesAdapter: TodayNotesAdapter
-    private lateinit var navController: NavController
-    private lateinit var pbNotFinishFragment: ProgressBar
+    val navController by lazy {
+        findNavController()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,23 +61,15 @@ class NotFinishFragment :
 
     private fun renderProgress(isLoad: Boolean) {
         if (isLoad) {
-            pbNotFinishFragment.visibility = View.VISIBLE
-            rvFragmentNotFinish.visibility = View.GONE
+            rootView.pb_not_finish_fragment.visibility = View.VISIBLE
+            rootView.rv_fragment_not_finish.visibility = View.GONE
         } else {
-            pbNotFinishFragment.visibility = View.GONE
-            rvFragmentNotFinish.visibility = View.VISIBLE
+            rootView.pb_not_finish_fragment.visibility = View.GONE
+            rootView.rv_fragment_not_finish.visibility = View.VISIBLE
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        navController = findNavController()
-    }
 
-    override fun initViews(v: View) {
-        rvFragmentNotFinish = v.rv_fragment_not_finish
-        pbNotFinishFragment = v.pb_not_finish_fragment
-    }
 
     private fun initRecyclerView(notesList: List<Note>) {
         todayNotesAdapter = TodayNotesAdapter(notesList, object : TodayNotesAdapter.Callback {
@@ -98,8 +87,8 @@ class NotFinishFragment :
                 viewModel.updateNote(item)
             }
         })
-        rvFragmentNotFinish.layoutManager = GridLayoutManager(context, SPAN_COUNT_RV)
-        rvFragmentNotFinish.adapter = todayNotesAdapter
+        rootView.rv_fragment_not_finish.layoutManager = GridLayoutManager(context, SPAN_COUNT_RV)
+        rootView.rv_fragment_not_finish.adapter = todayNotesAdapter
     }
 
     override fun initListeners() {

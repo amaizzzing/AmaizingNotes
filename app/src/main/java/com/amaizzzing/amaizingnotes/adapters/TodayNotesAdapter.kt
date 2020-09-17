@@ -34,7 +34,6 @@ class TodayNotesAdapter(var items: List<Note>, val callback: Callback) :
 
             if (note.typeNote == NoteType.TASK.type) {
                 chkbx_today_notes_item.visibility = View.VISIBLE
-
             } else {
                 chkbx_today_notes_item.visibility = View.GONE
             }

@@ -13,9 +13,6 @@ import org.koin.android.viewmodel.ext.android.viewModel
 const val REQUEST_CODE = 4242
 
 class SplashActivity : AppCompatActivity() {
-    /*@Inject
-    lateinit var factory: ViewModelProvider.Factory*/
-
     private val viewModel1: SplashViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {

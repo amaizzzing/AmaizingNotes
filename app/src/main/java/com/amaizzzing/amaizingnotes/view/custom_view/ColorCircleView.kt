@@ -17,8 +17,8 @@ class ColorCircleView @JvmOverloads constructor(context: Context,
                                                 defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
 
     companion object {
-        @Dimension(unit = DP) private const val defRadiusDp = 16
-        @Dimension(unit = DP) private const val defStrokeWidthDp = 1
+        private const val defRadius = 60f
+        private const val defStrokeWidth = 5f
     }
 
     private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -31,22 +31,21 @@ class ColorCircleView @JvmOverloads constructor(context: Context,
 
     private var center: Pair<Float, Float> = 0f to 0f
 
-    @Dimension(unit = PX) var radius: Float = 60f
+    var radius: Float = defRadius
 
-    @ColorRes
-    var fillColorRes: Int = R.color.colorWhite
+   var fillColorRes: Int = R.color.colorWhite
         set(value) {
             field = value
             fillPaint.color = ContextCompat.getColor(context, value)
         }
 
-    @ColorRes var strokeColorRes: Int = R.color.colorAccent
+    var strokeColorRes: Int = R.color.colorAccent
         set(value) {
             field = value
             strokePaint.color = ContextCompat.getColor(context, value)
         }
 
-    @Dimension(unit = PX) var strokeWidth: Float = 5f
+    var strokeWidth: Float = defStrokeWidth
         set(value) {
             field = value
             strokePaint.strokeWidth = value
@@ -55,11 +54,11 @@ class ColorCircleView @JvmOverloads constructor(context: Context,
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.ColorCircleView)
 
-        val defRadiusPx = 60f
+        val defRadiusPx = defRadius
         radius = a.getDimension(R.styleable.ColorCircleView_circleRadius, defRadiusPx)
         fillColorRes = a.getResourceId(R.styleable.ColorCircleView_fillColor, R.color.colorWhite)
 
-        val defStrokeWidthPx = 5f
+        val defStrokeWidthPx = defStrokeWidth
         strokeWidth = a.getDimension(R.styleable.ColorCircleView_strokeWidth, defStrokeWidthPx)
 
         strokeColorRes = a.getResourceId(R.styleable.ColorCircleView_strokeColor, R.color.colorAccent)

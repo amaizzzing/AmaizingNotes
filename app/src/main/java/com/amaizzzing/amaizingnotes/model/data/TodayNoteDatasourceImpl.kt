@@ -8,8 +8,6 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 
 class TodayNoteDatasourceImpl(val dataSource : TodayNoteDatasource) : TodayNoteDatasource {
-    //private val dataSource : TodayNoteDatasource = NotesApplication.instance.fireBaseDao
-
     override fun insertNote(apiNote: ApiNote): Maybe<Long>? =
         dataSource.insertNote(apiNote)
 

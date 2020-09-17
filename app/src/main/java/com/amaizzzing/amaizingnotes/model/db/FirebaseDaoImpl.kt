@@ -14,16 +14,15 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 
-const val DATE_FIELD_TO_SEARCH = "date"
-const val TYPE_NOTE_TO_SEARCH = "typeNote"
-const val TEXT_KEY_TO_SEARCH = "text"
-const val ID_KEY_TO_SEARCH = "id"
-const val DONE_KEY = "done"
-
 class FirebaseDaoImpl(val store: FirebaseFirestore, val auth: FirebaseAuth) : TodayNoteDatasource {
     companion object {
         private const val NOTES_COLLECTION = "amaizing_notes"
         private const val USER_COLLECTION = "users"
+        const val DATE_FIELD_TO_SEARCH = "date"
+        const val TYPE_NOTE_TO_SEARCH = "typeNote"
+        const val TEXT_KEY_TO_SEARCH = "text"
+        const val ID_KEY_TO_SEARCH = "id"
+        const val DONE_KEY = "done"
     }
 
     private val currentUser
