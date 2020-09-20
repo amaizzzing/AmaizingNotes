@@ -4,18 +4,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.amaizzzing.amaizingnotes.R
-import com.amaizzzing.amaizingnotes.model.entities.Note
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.bottom_dialog_item.view.*
 
-class BottomDialogAdapter(var items:List<Int>,val callback : Callback):
+class BottomDialogAdapter(var items: List<Int>, val callback: Callback) :
     RecyclerView.Adapter<BottomDialogAdapter.BottomViewHolder>() {
 
-    inner class BottomViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
+    inner class BottomViewHolder(override val containerView: View) :
+        RecyclerView.ViewHolder(containerView), LayoutContainer {
         private val imgBottomDialog = itemView.findViewById<ImageView>(R.id.img_bottom_dialog)
-        fun bind(item:Int){
-            imgBottomDialog.setImageResource(item)
+        fun bind(item: Int) {
+            with(itemView) {
+                img_bottom_dialog.setImageResource(item)
+            }
             imgBottomDialog.setOnClickListener {
                 callback.onItemClicked(items[adapterPosition])
             }

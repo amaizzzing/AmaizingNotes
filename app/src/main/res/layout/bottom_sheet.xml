@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:paddingBottom="8dp"
     >
     <androidx.recyclerview.widget.RecyclerView
@@ -11,4 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_calendar_rv_item"
         android:layout_margin="5dp"/>
-</FrameLayout>
+    <com.amaizzzing.amaizingnotes.view.custom_view.ColorPickerView
+        android:id="@+id/color_picker_view_bottom_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"/>
+</LinearLayout>

@@ -1,26 +1,21 @@
 package com.amaizzzing.amaizingnotes.viewmodel
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amaizzzing.amaizingnotes.model.entities.AllResults
-import com.amaizzzing.amaizingnotes.model.entities.ResultsNotesItem
 import com.amaizzzing.amaizingnotes.model.interactors.TodayNotesInteractor
 import com.amaizzzing.amaizingnotes.utils.DAYS_30_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.DAYS_7_IN_MILLIS
 import com.amaizzzing.amaizingnotes.utils.getEndDay
 import com.amaizzzing.amaizingnotes.utils.getStartDay
 import com.amaizzzing.amaizingnotes.view.base.BaseViewModel
-import com.amaizzzing.amaizingnotes.view.base.BaseViewState
 import com.amaizzzing.amaizingnotes.view.view_states.ResultsViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
-import javax.inject.Inject
 
-class ResultsViewModel @Inject constructor(var interactor: TodayNotesInteractor) :
-    BaseViewModel<AllResults,ResultsViewState<AllResults>>() {
+class ResultsViewModel(val interactor: TodayNotesInteractor) :
+    BaseViewModel<AllResults, ResultsViewState<AllResults>>() {
     private var resultsViewState: ResultsViewState<AllResults> = ResultsViewState(true, null, null)
     private var allResultsNotes = AllResults()
 
@@ -67,11 +62,11 @@ class ResultsViewModel @Inject constructor(var interactor: TodayNotesInteractor)
             }.await()
         }
 
-        try {
+        resultsViewState = try {
             scope.await()
-            resultsViewState = ResultsViewState(false, null, allResultsNotes)
+            ResultsViewState(false, null, allResultsNotes)
         } catch (t: Throwable) {
-            resultsViewState = ResultsViewState(false, t, null)
+            ResultsViewState(false, t, null)
         }
     }
 

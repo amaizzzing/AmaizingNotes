@@ -5,8 +5,9 @@ import com.amaizzzing.amaizingnotes.model.data.TodayNoteDatasourceImpl
 import dagger.Module
 import dagger.Provides
 
+/*
 @Module
-class NoteDatasourceModule {
+class NoteDatasourceModule(val datasource: TodayNoteDatasource) {
     @Provides
-    fun getNoteDatasourceModule() : TodayNoteDatasource = TodayNoteDatasourceImpl()
-}
+    fun getNoteDatasourceModule() : TodayNoteDatasource = TodayNoteDatasourceImpl(datasource)
+}*/

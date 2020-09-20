@@ -18,7 +18,6 @@ abstract class BaseFragment<T, S : BaseViewState<T>> : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initViews(rootView)
         initListeners()
         viewModel.getViewState().observe(viewLifecycleOwner, Observer {
             renderUI(it)
@@ -28,8 +27,6 @@ abstract class BaseFragment<T, S : BaseViewState<T>> : Fragment() {
     }
 
     abstract fun renderUI(data: S)
-
-    abstract fun initViews(v: View)
 
     abstract fun initListeners()
 }

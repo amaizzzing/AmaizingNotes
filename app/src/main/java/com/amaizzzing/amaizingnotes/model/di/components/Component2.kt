@@ -18,9 +18,9 @@ import javax.inject.Singleton
     ]
 )
 interface Component2 {
-    fun injectToCalendarFragment(fragment: CalendarFragment)
-    fun injectToAddNoteFragment(fragment: AddNoteFragment)
-    fun injectToNotFinishFragment(fragment: NotFinishFragment)
-    fun injectToResultsFragment(fragment: ResultsFragment)
-    fun injectToSplashActivity(activity:SplashActivity)
+    //fun injectToCalendarFragment(fragment: CalendarFragment)
+    //fun injectToAddNoteFragment(fragment: AddNoteFragment)
+    //fun injectToNotFinishFragment(fragment: NotFinishFragment)
+    //fun injectToResultsFragment(fragment: ResultsFragment)
+    //fun injectToSplashActivity(activity:SplashActivity)
 }

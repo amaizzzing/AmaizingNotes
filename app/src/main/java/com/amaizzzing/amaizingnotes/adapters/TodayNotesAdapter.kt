@@ -3,11 +3,11 @@ package com.amaizzzing.amaizingnotes.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.model.entities.NoteType
+import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.today_notes_item.view.*
 
 class TodayNotesAdapter(var items: List<Note>, val callback: Callback) :
@@ -23,36 +23,27 @@ class TodayNotesAdapter(var items: List<Note>, val callback: Callback) :
         holder.bind(items[position])
     }
 
-    inner class NotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val timeTodayNotesItem = itemView.findViewById<TextView>(R.id.time_today_notes_item)
-        private val textTodayNotesItem = itemView.findViewById<TextView>(R.id.text_today_notes_item)
-        private val nameTodayNotesItem = itemView.findViewById<TextView>(R.id.name_today_notes_item)
-        private val chkbxTodayNotesItem = itemView.chkbx_today_notes_item
-        private val typeNotesitem = itemView.type_notes_item
-        private var cvMainTodayNoteItem = itemView.cv_main_today_note_item
+    inner class NotesViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+        fun bind(note: Note) = with(itemView) {
+            time_today_notes_item.text = note.dateFormatted
+            name_today_notes_item.text = note.nameNote
+            text_today_notes_item.text = note.text
+            if (note.background != 0)
+                cv_main_today_note_item.background =
+                    cv_main_today_note_item.context.getDrawable(note.background)
 
-        fun bind(item: Note) {
-            with(item) {
-                timeTodayNotesItem.text = dateFormatted
-                nameTodayNotesItem.text = nameNote
-                textTodayNotesItem.text = text
-                if(background!=0)
-                cvMainTodayNoteItem.background = cvMainTodayNoteItem.context.getDrawable(background)
-
-                if (item.typeNote == NoteType.TASK.type) {
-                    chkbxTodayNotesItem.visibility = View.VISIBLE
-
-                } else {
-                    chkbxTodayNotesItem.visibility = View.GONE
-                }
-                typeNotesitem.text = item.typeNote
-                chkbxTodayNotesItem.isChecked = isDone
-
+            if (note.typeNote == NoteType.TASK.type) {
+                chkbx_today_notes_item.visibility = View.VISIBLE
+            } else {
+                chkbx_today_notes_item.visibility = View.GONE
             }
-            textTodayNotesItem.setOnClickListener {
+            type_notes_item.text = note.typeNote
+            chkbx_today_notes_item.isChecked = note.isDone
+
+            text_today_notes_item.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) callback.onItemClicked(items[adapterPosition])
             }
-            chkbxTodayNotesItem.setOnCheckedChangeListener { _, isChecked ->
+            chkbx_today_notes_item.setOnCheckedChangeListener { _, isChecked ->
                 callback.onChcbxChecked(items[adapterPosition], isChecked)
             }
         }

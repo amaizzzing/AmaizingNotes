@@ -1,38 +1,22 @@
 package com.amaizzzing.amaizingnotes.view.activities
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.model.NoAuthException
-import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
-import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.viewmodel.SplashViewModel
 import com.firebase.ui.auth.AuthUI
-import javax.inject.Inject
+import org.koin.android.viewmodel.ext.android.viewModel
 
 const val REQUEST_CODE = 4242
 
 class SplashActivity : AppCompatActivity() {
-    @Inject
-    lateinit var factory: ViewModelProvider.Factory
-
-    val viewModel1 : SplashViewModel by lazy { ViewModelProvider(this, factory).get(SplashViewModel::class.java) }
+    private val viewModel1: SplashViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val comp2 = DaggerComponent2.builder()
-            .clearModule(ClearModule())
-            .build()
-        comp2.injectToSplashActivity(this)
 
         viewModel1.viewStateLiveData.observe(this, Observer { state ->
             state ?: return@Observer
@@ -50,7 +34,7 @@ class SplashActivity : AppCompatActivity() {
         viewModel1.requestUser()
     }
 
-    private fun startLogin(){
+    private fun startLogin() {
         val providers = listOf(
             AuthUI.IdpConfig.GoogleBuilder().build()
         )
@@ -65,16 +49,17 @@ class SplashActivity : AppCompatActivity() {
         startActivityForResult(intent, REQUEST_CODE)
 
     }
-    protected fun renderError(error: Throwable?) {
-        when(error){
+
+    private fun renderError(error: Throwable?) {
+        when (error) {
             is NoAuthException -> startLogin()
-            else ->  error?.message?.let { message ->
+            else -> error?.message?.let { message ->
                 showError(message)
             }
         }
     }
 
-    fun renderData(data: Boolean?) {
+    private fun renderData(data: Boolean?) {
         data?.takeIf { it }?.let {
             startMainActivity()
         }
@@ -85,7 +70,7 @@ class SplashActivity : AppCompatActivity() {
         finish()
     }
 
-    protected fun showError(message: String) {
+    private fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

@@ -4,17 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.amaizzzing.amaizingnotes.R
 import com.amaizzzing.amaizingnotes.adapters.TodayNotesAdapter
-import com.amaizzzing.amaizingnotes.model.di.components.DaggerComponent2
-import com.amaizzzing.amaizingnotes.model.di.modules.ClearModule
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.utils.SPAN_COUNT_RV
 import com.amaizzzing.amaizingnotes.view.base.BaseFragment
@@ -22,35 +16,26 @@ import com.amaizzzing.amaizingnotes.view.view_states.NotFinishViewState
 import com.amaizzzing.amaizingnotes.viewmodel.NotFinishViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_not_finish.view.*
-import javax.inject.Inject
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class NotFinishFragment :
     BaseFragment<MutableList<Note>, NotFinishViewState<MutableList<Note>>>() {
-    @Inject
-    lateinit var factory: ViewModelProvider.Factory
-    override val viewModel: NotFinishViewModel by lazy {
-        ViewModelProvider(this, factory).get(NotFinishViewModel::class.java)
-    }
+    override val viewModel: NotFinishViewModel by viewModel()
     override val layoutRes: Int = R.layout.fragment_not_finish
     override val rootView: View by lazy {
         this.layoutInflater.inflate(R.layout.fragment_not_finish, container, false)
     }
 
-    private lateinit var rvFragmentNotFinish: RecyclerView
     private lateinit var todayNotesAdapter: TodayNotesAdapter
-    private lateinit var navController: NavController
-    private lateinit var pbNotFinishFragment: ProgressBar
+    val navController by lazy {
+        findNavController()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val comp2 = DaggerComponent2.builder()
-            .clearModule(ClearModule())
-            .build()
-        comp2.injectToNotFinishFragment(this)
-
         super.onCreateView(inflater, container, savedInstanceState)
 
         return rootView
@@ -76,23 +61,15 @@ class NotFinishFragment :
 
     private fun renderProgress(isLoad: Boolean) {
         if (isLoad) {
-            pbNotFinishFragment.visibility = View.VISIBLE
-            rvFragmentNotFinish.visibility = View.GONE
+            rootView.pb_not_finish_fragment.visibility = View.VISIBLE
+            rootView.rv_fragment_not_finish.visibility = View.GONE
         } else {
-            pbNotFinishFragment.visibility = View.GONE
-            rvFragmentNotFinish.visibility = View.VISIBLE
+            rootView.pb_not_finish_fragment.visibility = View.GONE
+            rootView.rv_fragment_not_finish.visibility = View.VISIBLE
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        navController = findNavController()
-    }
 
-    override fun initViews(v: View) {
-        rvFragmentNotFinish = v.rv_fragment_not_finish
-        pbNotFinishFragment = v.pb_not_finish_fragment
-    }
 
     private fun initRecyclerView(notesList: List<Note>) {
         todayNotesAdapter = TodayNotesAdapter(notesList, object : TodayNotesAdapter.Callback {
@@ -110,8 +87,8 @@ class NotFinishFragment :
                 viewModel.updateNote(item)
             }
         })
-        rvFragmentNotFinish.layoutManager = GridLayoutManager(context, SPAN_COUNT_RV)
-        rvFragmentNotFinish.adapter = todayNotesAdapter
+        rootView.rv_fragment_not_finish.layoutManager = GridLayoutManager(context, SPAN_COUNT_RV)
+        rootView.rv_fragment_not_finish.adapter = todayNotesAdapter
     }
 
     override fun initListeners() {
