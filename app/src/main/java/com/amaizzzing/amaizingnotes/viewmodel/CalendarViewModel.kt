@@ -1,5 +1,6 @@
 package com.amaizzzing.amaizingnotes.viewmodel
 
+import androidx.annotation.VisibleForTesting
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.model.entities.NoteType
 import com.amaizzzing.amaizingnotes.model.interactors.TodayNotesInteractor
@@ -70,7 +71,8 @@ class CalendarViewModel(val interactor: TodayNotesInteractor) :
             ?.subscribe()
     }
 
-    override fun onCleared() {
+    @VisibleForTesting
+    public override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
     }
