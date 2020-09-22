@@ -7,6 +7,7 @@ import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.data.TodayNoteDatasource
 import com.amaizzzing.amaizingnotes.model.entities.User
 import com.amaizzzing.amaizingnotes.utils.TASK_TYPE_VALUE
+import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -181,6 +182,38 @@ class FirebaseDaoImpl(val store: FirebaseFirestore, val auth: FirebaseAuth) : To
                         emitter.onError(it)
                     }
             }
+        }
+    }
+//-----------------------For test LiveData---------------------------------------
+    fun subscribeToAllNotes(): LiveData<CalendarNoteViewState<List<ApiNote?>>> = MutableLiveData<CalendarNoteViewState<List<ApiNote?>>>().apply {
+        try {
+            getUserNotesCollection.addSnapshotListener { snapshot, e ->
+                e?.let {
+                    value = CalendarNoteViewState(false,e,null)
+                } ?: let {
+                    snapshot?.let {
+                        val notes = snapshot.documents.map { doc ->
+                            doc.toObject(ApiNote::class.java)
+                        }
+                        value = CalendarNoteViewState(false,null,notes)
+                    }
+                }
+            }
+        } catch (e: Throwable) {
+            value = CalendarNoteViewState(false,e,null)
+        }
+    }
+
+    fun saveNote(note: ApiNote) = MutableLiveData<CalendarNoteViewState<ApiNote>>().apply {
+        try {
+            getUserNotesCollection.document(note.id.toString()).set(note)
+                .addOnSuccessListener {
+                    value = CalendarNoteViewState<ApiNote>(false,null,note)
+                }.addOnFailureListener {
+                    value = CalendarNoteViewState(false,it,null)
+                }
+        } catch (e: Throwable) {
+            value = CalendarNoteViewState(false,e,null)
         }
     }
 }

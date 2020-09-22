@@ -43,7 +43,7 @@ class NotFinishViewModel(val interactor: TodayNotesInteractor) :
         }!!
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
     }
