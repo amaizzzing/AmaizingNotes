@@ -29,10 +29,11 @@ import com.amaizzzing.amaizingnotes.viewmodel.CalendarViewModel
 import com.firebase.ui.auth.AuthUI
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_calendar.view.*
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class CalendarFragment :
-    BaseFragment<MutableList<Note>, CalendarNoteViewState<MutableList<Note>>>() {
+    BaseFragment<CalendarNoteViewState<MutableList<Note>>>() {
     override val viewModel: CalendarViewModel by viewModel()
     val navController by lazy {
         findNavController()
@@ -253,7 +254,9 @@ class CalendarFragment :
 
             override fun onChcbxChecked(item: Note, isChecked: Boolean) {
                 item.isDone = isChecked
-                viewModel.updateNote(item)
+                launch {
+                    viewModel.updateNote(item)
+                }
             }
         })
         rvFragmentCalendar.layoutManager = GridLayoutManager(context, SPAN_COUNT_RV)

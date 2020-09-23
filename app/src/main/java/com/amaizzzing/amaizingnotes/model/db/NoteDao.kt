@@ -5,9 +5,12 @@ import androidx.room.*
 import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.data.TodayNoteDatasource
 import com.amaizzzing.amaizingnotes.model.entities.User
+import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import io.reactivex.Flowable
 import io.reactivex.Maybe
+import kotlinx.coroutines.channels.ReceiveChannel
 
+/*
 @Dao
 interface NoteDao : TodayNoteDatasource{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -26,7 +29,7 @@ interface NoteDao : TodayNoteDatasource{
     override fun getTodayNote(startDay: Long, endDay: Long, typeRecord:String): Flowable<List<ApiNote>>
 
     @Query("select * from api_note where date between :startDay and :endDay order by isDone,date desc")
-    override fun getAllNotes(startDay: Long, endDay: Long): Flowable<List<ApiNote>>
+    override fun getAllNotes(startDay: Long, endDay: Long): ReceiveChannel<CalendarNoteViewState<MutableList<ApiNote>>>
 
     @Query("select count(id) from api_note where isDone=1 and date between :startDay and :endDay")
     override fun getCountFinishTasks(startDay: Long, endDay: Long): Int
@@ -40,10 +43,12 @@ interface NoteDao : TodayNoteDatasource{
     @Query("select * from api_note where nameNote like lower(:searchText) or text like lower(:searchText)")
     override fun searchNotes(searchText:String): Flowable<List<ApiNote>>
 
-    /*
+    */
+/*
     * запрос на подсчет разницы среднего количества выполненных задач за прошедшие дни и выполненных за сегодняшний день
     * для подсчета рейтинга в достижениях
-     */
+     *//*
+
     @Query(
         "select avg(count) - (select count(id) from api_note where isDone=1 and strftime('%Y-%m-%d', date/1000, 'unixepoch') = strftime('%Y-%m-%d', 'now', 'localtime')) " +
                 "from (" +
@@ -59,7 +64,9 @@ interface NoteDao : TodayNoteDatasource{
         TODO("Not yet implemented")
     }
 
-    /*override fun subscribeToAllUserNotes(start: Long, end: Long): Flowable<List<ApiNote>> {
+    */
+/*override fun subscribeToAllUserNotes(start: Long, end: Long): Flowable<List<ApiNote>> {
         TODO("Not yet implemented")
-    }*/
-}
+    }*//*
+
+}*/

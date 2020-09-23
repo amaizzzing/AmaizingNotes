@@ -6,10 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-abstract class BaseFragment<T, S : BaseViewState<T>> : Fragment() {
-
-    abstract val viewModel: BaseViewModel<T, S>
+abstract class BaseFragment<S> : Fragment(),CoroutineScope {
+    override val coroutineContext: CoroutineContext by lazy {
+        Dispatchers.Main + Job()
+    }
+    private lateinit var dataJob: Job
+    private lateinit var errorJob: Job
+    abstract val viewModel: BaseViewModel<S>
     abstract val layoutRes: Int
     abstract val rootView: View
 
@@ -19,9 +29,21 @@ abstract class BaseFragment<T, S : BaseViewState<T>> : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         initListeners()
-        viewModel.getViewState().observe(viewLifecycleOwner, Observer {
+        dataJob = launch {
+            viewModel.getViewState().consumeEach {
+                renderUI(it)
+            }
+        }
+
+        /*errorJob = launch {
+            model.getErrorChannel().consumeEach {
+                renderError(it)
+            }
+        }*/
+
+        /*viewModel.getViewState().observe(viewLifecycleOwner, Observer {
             renderUI(it)
-        })
+        })*/
 
         return rootView
     }

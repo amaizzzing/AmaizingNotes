@@ -6,41 +6,43 @@ import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.model.entities.User
 import com.amaizzzing.amaizingnotes.model.mappers.NoteMapper
 import com.amaizzzing.amaizingnotes.model.repositories.TodayNoteRepository
+import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.channels.ReceiveChannel
 
 class TodayNotesInteractorImpl(private val todayNoteRepository: TodayNoteRepository) :
     TodayNotesInteractor {
 
-    override fun updateNote(apiNote: ApiNote): Maybe<Int>? =
+    override suspend fun updateNote(apiNote: ApiNote) =
         todayNoteRepository.updateNote(apiNote)
 
-    override fun deleteNote(apiNote: ApiNote): Maybe<Int>? =
+    override suspend fun deleteNote(apiNote: ApiNote) =
         todayNoteRepository.deleteNote(apiNote)
 
-    override fun insertNote(apiNote: ApiNote): Maybe<Long>? =
+    override suspend fun insertNote(apiNote: ApiNote) =
         todayNoteRepository.insertNote(apiNote)
 
-    override fun deleteNoteById(id1: Long): Maybe<Int>? =
+    override suspend fun deleteNoteById(id1: Long) =
         todayNoteRepository.deleteNoteById(id1)
 
     override fun getTodayNotes(
         startDay: Long,
         endDay: Long,
         typeRecord: String
-    ): Flowable<MutableList<Note>>? =
+    ): ReceiveChannel<CalendarNoteViewState<MutableList<ApiNote>>> =
         todayNoteRepository.getTodayNote(startDay, endDay, typeRecord)
-            ?.map { it -> NoteMapper.listApiNoteToListNote(it) }
+            /*?.map { it -> NoteMapper.listApiNoteToListNote(it) }
             ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.observeOn(AndroidSchedulers.mainThread())*/
 
-    override fun getAllNotes(startDay: Long, endDay: Long): Flowable<MutableList<Note>> =
+    override fun getAllNotes(startDay: Long, endDay: Long): ReceiveChannel<CalendarNoteViewState<MutableList<ApiNote>>> =
         todayNoteRepository.getAllNotes(startDay, endDay)
-            .map { NoteMapper.listApiNoteToListNote(it) }
+            /*.map { NoteMapper.listApiNoteToListNote(it) }
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())*/
 
     override fun getCountFinishTasks(startDay: Long, endDay: Long): Int =
         todayNoteRepository.getCountFinishTasks(startDay, endDay)
@@ -54,11 +56,11 @@ class TodayNotesInteractorImpl(private val todayNoteRepository: TodayNoteReposit
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
 
-    override fun searchNotes(searchText: String): Flowable<MutableList<Note>> =
+    override fun searchNotes(searchText: String): ReceiveChannel<CalendarNoteViewState<MutableList<ApiNote>>> =
         todayNoteRepository.searchNotes(searchText)
-            .map { it -> NoteMapper.listApiNoteToListNote(it) }
+            /*.map { it -> NoteMapper.listApiNoteToListNote(it) }
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())*/
 
     override fun getCoefRatingForDays(): Float {
         val coef = todayNoteRepository.getCoefRatingForDays()

@@ -24,12 +24,13 @@ import com.amaizzzing.amaizingnotes.viewmodel.AddNoteViewModel
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.add_note_fragment.view.*
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class AddNoteFragment : BaseFragment<Note, AddNoteViewState<Note>>() {
+class AddNoteFragment : BaseFragment<AddNoteViewState<Note>>() {
     override val viewModel: AddNoteViewModel by viewModel()
     val navController by lazy {
         findNavController()
@@ -141,7 +142,9 @@ class AddNoteFragment : BaseFragment<Note, AddNoteViewState<Note>>() {
         }
 
         rootView.btn_delete_add_note_fragment.setOnClickListener {
-            viewModel.deleteNoteById(idFromHomeFragment!!)
+            launch {
+                viewModel.deleteNoteById(idFromHomeFragment!!)
+            }
             navController.popBackStack()
         }
 

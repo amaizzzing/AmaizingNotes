@@ -10,10 +10,13 @@ import com.amaizzzing.amaizingnotes.utils.TASK_TYPE_VALUE
 import com.amaizzzing.amaizingnotes.view.view_states.CalendarNoteViewState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Maybe
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
 
 class FirebaseDaoImpl(val store: FirebaseFirestore, val auth: FirebaseAuth) : TodayNoteDatasource {
     companion object {
@@ -38,71 +41,128 @@ class FirebaseDaoImpl(val store: FirebaseFirestore, val auth: FirebaseAuth) : To
         value = currentUser?.let { User(it.displayName ?: "", it.email ?: "") }
     }
 
-    override fun getAllNotes(start: Long, end: Long): Flowable<List<ApiNote>> =
-        Flowable.create({
-            val listenerRegistration = getUserNotesCollection
-                .whereGreaterThan(DATE_FIELD_TO_SEARCH, start)
-                .whereLessThan(DATE_FIELD_TO_SEARCH, end)
-                .orderBy(DATE_FIELD_TO_SEARCH, Query.Direction.DESCENDING)
-                .addSnapshotListener { value, error ->
-                    if (error != null) {
-                        it.onError(error)
-                        return@addSnapshotListener
-                    } else if (value != null) {
-                        it.onNext(value.toObjects(ApiNote::class.java))
-                        it.onComplete()
+    override fun getAllNotes(
+        start: Long,
+        end: Long
+    ): ReceiveChannel<CalendarNoteViewState<MutableList<ApiNote>>> =
+        Channel<CalendarNoteViewState<MutableList<ApiNote>>>(Channel.CONFLATED).apply {
+            var registration: ListenerRegistration? = null
+            try {
+                registration = getUserNotesCollection
+                    .whereGreaterThan(DATE_FIELD_TO_SEARCH, start)
+                    .whereLessThan(DATE_FIELD_TO_SEARCH, end)
+                    .orderBy(DATE_FIELD_TO_SEARCH, Query.Direction.DESCENDING)
+                    .addSnapshotListener { value, error ->
+                        if (error != null) {
+                            CalendarNoteViewState(false, error, null)
+                            return@addSnapshotListener
+                        } else if (value != null) {
+                            CalendarNoteViewState(
+                                false,
+                                null,
+                                value.toObjects(ApiNote::class.java)
+                            )
+                        }
+                        value?.let {
+                            offer(
+                                CalendarNoteViewState(
+                                    false,
+                                    null,
+                                    value.toObjects(ApiNote::class.java)
+                                )
+                            )
+                        }
                     }
-                }
-            it.setCancellable { listenerRegistration.remove() }
-        }, BackpressureStrategy.LATEST)
+            } catch (e: Throwable) {
+                offer(CalendarNoteViewState(false, e, null))
+            }
 
-    override fun getCountFinishTasks(startDay: Long, endDay: Long): Int {
-        TODO("Not yet implemented")
-    }
-
+            invokeOnClose {
+                registration?.remove()
+            }
+        }
 
     override fun getTodayNote(
         startDay: Long,
         endDay: Long,
         typeRecord: String
-    ): Flowable<List<ApiNote>> =
-        Flowable.create({
-            val listenerRegistration = getUserNotesCollection
-                .whereGreaterThan(DATE_FIELD_TO_SEARCH, startDay)
-                .whereLessThan(DATE_FIELD_TO_SEARCH, endDay)
-                .whereEqualTo(TYPE_NOTE_TO_SEARCH, typeRecord)
-                .orderBy(DATE_FIELD_TO_SEARCH, Query.Direction.DESCENDING)
-                .addSnapshotListener { value, error ->
-                    if (error != null) {
-                        it.onError(error)
-                        return@addSnapshotListener
-                    } else if (value != null) {
-                        it.onNext(value.toObjects(ApiNote::class.java))
-                        it.onComplete()
-                    }
-                }
-            it.setCancellable { listenerRegistration.remove() }
-        }, BackpressureStrategy.LATEST)
+    ): ReceiveChannel<CalendarNoteViewState<MutableList<ApiNote>>> =
+        Channel<CalendarNoteViewState<MutableList<ApiNote>>>(Channel.CONFLATED).apply {
+            var registration: ListenerRegistration? = null
 
-
-    override fun searchNotes(searchText: String): Flowable<List<ApiNote>> {
-        val str = searchText.substring(1, searchText.length - 1)
-        return Flowable.create({
-            val listenerRegistration = getUserNotesCollection
-                .whereEqualTo(TEXT_KEY_TO_SEARCH, str)
-                .orderBy(DATE_FIELD_TO_SEARCH)
-                .addSnapshotListener { value, error ->
-                    if (error != null) {
-                        it.onError(error)
-                        return@addSnapshotListener
-                    } else if (value != null) {
-                        it.onNext(value.toObjects(ApiNote::class.java))
-                        it.onComplete()
+            try {
+                registration = getUserNotesCollection
+                    .whereGreaterThan(DATE_FIELD_TO_SEARCH, startDay)
+                    .whereLessThan(DATE_FIELD_TO_SEARCH, endDay)
+                    .whereEqualTo(TYPE_NOTE_TO_SEARCH, typeRecord)
+                    .orderBy(DATE_FIELD_TO_SEARCH, Query.Direction.DESCENDING)
+                    .addSnapshotListener { value, error ->
+                        if (error != null) {
+                            CalendarNoteViewState(false, error, null)
+                            return@addSnapshotListener
+                        } else if (value != null) {
+                            CalendarNoteViewState(
+                                false,
+                                null,
+                                value.toObjects(ApiNote::class.java)
+                            )
+                        }
+                        value?.let {
+                            offer(
+                                CalendarNoteViewState(
+                                    false,
+                                    null,
+                                    value.toObjects(ApiNote::class.java)
+                                )
+                            )
+                        }
                     }
-                }
-            it.setCancellable { listenerRegistration.remove() }
-        }, BackpressureStrategy.LATEST)
-    }
+            } catch (e: Throwable) {
+                offer(CalendarNoteViewState(false, e, null))
+            }
+
+            invokeOnClose {
+                registration?.remove()
+            }
+        }
+
+    override fun searchNotes(searchText: String): ReceiveChannel<CalendarNoteViewState<MutableList<ApiNote>>> =
+        Channel<CalendarNoteViewState<MutableList<ApiNote>>>(Channel.CONFLATED).apply {
+            var registration: ListenerRegistration? = null
+            val str = searchText.substring(1, searchText.length - 1)
+            try {
+                registration = getUserNotesCollection
+                    .whereEqualTo(TEXT_KEY_TO_SEARCH, str)
+                    .orderBy(DATE_FIELD_TO_SEARCH)
+                    .addSnapshotListener { value, error ->
+                        if (error != null) {
+                            CalendarNoteViewState(false, error, null)
+                            return@addSnapshotListener
+                        } else if (value != null) {
+                            CalendarNoteViewState(
+                                false,
+                                null,
+                                value.toObjects(ApiNote::class.java)
+                            )
+                        }
+                        value?.let {
+                            offer(
+                                CalendarNoteViewState(
+                                    false,
+                                    null,
+                                    value.toObjects(ApiNote::class.java)
+                                )
+                            )
+                        }
+                    }
+            } catch (e: Throwable) {
+                offer(CalendarNoteViewState(false, e, null))
+            }
+
+            invokeOnClose {
+                registration?.remove()
+            }
+        }
 
     override fun getCoefRatingForDays(): Double {
         TODO("Not yet implemented")
@@ -146,74 +206,76 @@ class FirebaseDaoImpl(val store: FirebaseFirestore, val auth: FirebaseAuth) : To
         }, BackpressureStrategy.LATEST)
 
 
-    override fun insertNote(note: ApiNote): Maybe<Long> =
-        Maybe.create { emitter ->
-            run {
-                getUserNotesCollection
-                    .document(note.id.toString())
-                    .set(note)
-                    .addOnSuccessListener {
-                        emitter.onSuccess(note.id)
-                        emitter.onComplete()
-                        return@addOnSuccessListener
-                    }
-                    .addOnFailureListener {
-                        emitter.onError(it)
-                    }
-            }
+    override suspend fun insertNote(note: ApiNote): Unit =
+        run {
+            getUserNotesCollection
+                .document(note.id.toString())
+                .set(note)
+                .addOnSuccessListener {
+                    note.id
+                    return@addOnSuccessListener
+                }
+                .addOnFailureListener {
+                    -1
+                }
         }
 
-    override fun updateNote(note: ApiNote): Maybe<Int> = insertNote(note).map { it.toInt() }
 
-    override fun deleteNote(apiNote: ApiNote): Maybe<Int>? = deleteNoteById(apiNote.id)
+    override suspend fun updateNote(note: ApiNote) = insertNote(note)
 
-    override fun deleteNoteById(id1: Long): Maybe<Int> {
-        return Maybe.create { emitter ->
-            run {
-                getUserNotesCollection
-                    .document(id1.toString())
-                    .delete()
-                    .addOnSuccessListener {
-                        emitter.onSuccess(1)
-                        emitter.onComplete()
-                        return@addOnSuccessListener
-                    }
-                    .addOnFailureListener {
-                        emitter.onError(it)
-                    }
-            }
+    override suspend fun deleteNote(apiNote: ApiNote) = deleteNoteById(apiNote.id)
+
+    override suspend fun deleteNoteById(id1: Long) {
+        run {
+            getUserNotesCollection
+                .document(id1.toString())
+                .delete()
+                .addOnSuccessListener {
+                    1
+                    return@addOnSuccessListener
+                }
+                .addOnFailureListener {
+                    -1
+                }
         }
+
     }
-//-----------------------For test LiveData---------------------------------------
-    fun subscribeToAllNotes(): LiveData<CalendarNoteViewState<List<ApiNote?>>> = MutableLiveData<CalendarNoteViewState<List<ApiNote?>>>().apply {
-        try {
-            getUserNotesCollection.addSnapshotListener { snapshot, e ->
-                e?.let {
-                    value = CalendarNoteViewState(false,e,null)
-                } ?: let {
-                    snapshot?.let {
-                        val notes = snapshot.documents.map { doc ->
-                            doc.toObject(ApiNote::class.java)
+
+    //-----------------------For test LiveData---------------------------------------
+    fun subscribeToAllNotes(): LiveData<CalendarNoteViewState<List<ApiNote?>>> =
+        MutableLiveData<CalendarNoteViewState<List<ApiNote?>>>().apply {
+            try {
+                getUserNotesCollection.addSnapshotListener { snapshot, e ->
+                    e?.let {
+                        value = CalendarNoteViewState(false, e, null)
+                    } ?: let {
+                        snapshot?.let {
+                            val notes = snapshot.documents.map { doc ->
+                                doc.toObject(ApiNote::class.java)
+                            }
+                            value = CalendarNoteViewState(false, null, notes)
                         }
-                        value = CalendarNoteViewState(false,null,notes)
                     }
                 }
+            } catch (e: Throwable) {
+                value = CalendarNoteViewState(false, e, null)
             }
-        } catch (e: Throwable) {
-            value = CalendarNoteViewState(false,e,null)
         }
-    }
 
     fun saveNote(note: ApiNote) = MutableLiveData<CalendarNoteViewState<ApiNote>>().apply {
         try {
             getUserNotesCollection.document(note.id.toString()).set(note)
                 .addOnSuccessListener {
-                    value = CalendarNoteViewState<ApiNote>(false,null,note)
+                    value = CalendarNoteViewState<ApiNote>(false, null, note)
                 }.addOnFailureListener {
-                    value = CalendarNoteViewState(false,it,null)
+                    value = CalendarNoteViewState(false, it, null)
                 }
         } catch (e: Throwable) {
-            value = CalendarNoteViewState(false,e,null)
+            value = CalendarNoteViewState(false, e, null)
         }
+    }
+
+    override fun getCountFinishTasks(startDay: Long, endDay: Long): Int {
+        TODO("Not yet implemented")
     }
 }

@@ -10,7 +10,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
 class NotFinishViewModel(val interactor: TodayNotesInteractor) :
-    BaseViewModel<MutableList<Note>, NotFinishViewState<MutableList<Note>>>() {
+    BaseViewModel<NotFinishViewState<MutableList<Note>>>() {
     private var compositeDisposable = CompositeDisposable()
 
     init {
@@ -32,7 +32,7 @@ class NotFinishViewModel(val interactor: TodayNotesInteractor) :
     }
 
     fun updateNote(note: Note) {
-        val upd = interactor.updateNote(NoteMapper.noteToApiNote(note))
+        /*val upd = interactor.updateNote(NoteMapper.noteToApiNote(note))
             ?.flatMapPublisher { interactor.getNotFinishNotes() }
             ?.map { NotFinishViewState(false, null, it) }
             ?.onErrorReturn { NotFinishViewState(false, it, null) }
@@ -40,7 +40,7 @@ class NotFinishViewModel(val interactor: TodayNotesInteractor) :
             ?.subscribe { viewStateLiveData.value = it }
         upd?.let {
             compositeDisposable.add(upd)
-        }!!
+        }!!*/
     }
 
     public override fun onCleared() {

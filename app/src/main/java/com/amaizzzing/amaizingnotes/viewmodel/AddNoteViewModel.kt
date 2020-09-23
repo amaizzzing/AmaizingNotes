@@ -8,28 +8,31 @@ import com.amaizzzing.amaizingnotes.view.base.BaseViewModel
 import com.amaizzzing.amaizingnotes.view.view_states.AddNoteViewState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 
 const val DEFAULT_ID = -1L
 
 class AddNoteViewModel(val interactor: TodayNotesInteractor) :
-    BaseViewModel<Note, AddNoteViewState<Note>>() {
+    BaseViewModel<AddNoteViewState<Note>>() {
     fun insertNote(apiNote: ApiNote) {
         if (apiNote.id == DEFAULT_ID) {
             apiNote.id = apiNote.date
-            interactor.insertNote(apiNote)
-                ?.subscribeOn(Schedulers.io())
-                ?.subscribe()
+            launch {
+                interactor.insertNote(apiNote)
+            }
+
         } else {
-            interactor.updateNote(apiNote)
-                ?.subscribeOn(Schedulers.io())
-                ?.subscribe()
+            launch {
+                interactor.updateNote(apiNote)
+            }
         }
     }
 
-    fun deleteNoteById(id1: Long) {
-        interactor.deleteNoteById(id1)
-            ?.subscribeOn(Schedulers.io())
-            ?.subscribe()
+    suspend fun deleteNoteById(id1: Long) {
+        launch {
+            interactor.deleteNoteById(id1)
+        }
+
     }
 
     fun getChosenNote(id: Long) =

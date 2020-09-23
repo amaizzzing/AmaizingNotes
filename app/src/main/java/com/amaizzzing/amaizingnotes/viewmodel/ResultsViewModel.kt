@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class ResultsViewModel(val interactor: TodayNotesInteractor) :
-    BaseViewModel<AllResults, ResultsViewState<AllResults>>() {
+    BaseViewModel<ResultsViewState<AllResults>>() {
     private var resultsViewState: ResultsViewState<AllResults> = ResultsViewState(true, null, null)
     private var allResultsNotes = AllResults()
 
