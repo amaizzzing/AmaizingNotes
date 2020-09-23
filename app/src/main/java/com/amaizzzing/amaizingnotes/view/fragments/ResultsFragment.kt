@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_results.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class ResultsFragment : BaseFragment<AllResults, ResultsViewState<AllResults>>() {
+class ResultsFragment : BaseFragment<ResultsViewState<AllResults>>() {
     override val viewModel: ResultsViewModel by viewModel()
     override val layoutRes: Int = R.layout.fragment_results
     override val rootView: View by lazy {

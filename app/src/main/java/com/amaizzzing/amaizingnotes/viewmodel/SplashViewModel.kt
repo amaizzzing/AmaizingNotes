@@ -10,7 +10,7 @@ import com.amaizzzing.amaizingnotes.view.view_states.SplashViewState
 import javax.inject.Inject
 
 class SplashViewModel (val interactor: TodayNotesInteractor) :
-    BaseViewModel<User,SplashViewState<User>>() {
+    BaseViewModel<SplashViewState<User>>() {
     fun requestUser() {
         interactor.getCurrentUser().observeForever {
             viewStateLiveData.value = it?.let {

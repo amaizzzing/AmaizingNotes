@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_not_finish.view.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class NotFinishFragment :
-    BaseFragment<MutableList<Note>, NotFinishViewState<MutableList<Note>>>() {
+    BaseFragment<NotFinishViewState<MutableList<Note>>>() {
     override val viewModel: NotFinishViewModel by viewModel()
     override val layoutRes: Int = R.layout.fragment_not_finish
     override val rootView: View by lazy {

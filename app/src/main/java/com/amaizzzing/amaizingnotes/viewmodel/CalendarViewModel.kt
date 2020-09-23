@@ -1,6 +1,7 @@
 package com.amaizzzing.amaizingnotes.viewmodel
 
 import androidx.annotation.VisibleForTesting
+import com.amaizzzing.amaizingnotes.model.api_model.ApiNote
 import com.amaizzzing.amaizingnotes.model.entities.Note
 import com.amaizzzing.amaizingnotes.model.entities.NoteType
 import com.amaizzzing.amaizingnotes.model.interactors.TodayNotesInteractor
@@ -13,12 +14,17 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 import java.util.*
 
 const val LENGTH_STR_TO_SEARCH = 3
 
 class CalendarViewModel(val interactor: TodayNotesInteractor) :
-    BaseViewModel<MutableList<Note>, CalendarNoteViewState<MutableList<Note>>>() {
+    BaseViewModel<CalendarNoteViewState<MutableList<Note>>>() {
+    //private val notesChannel = notesRepository.getNotes()
+
     private var compositeDisposable = CompositeDisposable()
     private var dis: Disposable? = null
 
@@ -26,55 +32,60 @@ class CalendarViewModel(val interactor: TodayNotesInteractor) :
         range: Long = Date().getEndDay(Calendar.getInstance().time.time),
         noteType: NoteType
     ) {
-        if (dis != null) {
-            compositeDisposable.remove(dis!!);compositeDisposable.remove(dis!!)
+        launch {
+            val defaultTime = Calendar.getInstance().time.time
+            if (noteType == NoteType.ALL) {
+                interactor.getAllNotes(
+                    Date().getStartDay(defaultTime),
+                    Date().getEndDay(defaultTime + range)
+                ).consumeEach {
+                    val newState = CalendarNoteViewState(
+                        it._isLoading,
+                        it._error,
+                        NoteMapper.listApiNoteToListNote(it.data!!.toList())
+                    )
+                    setData(newState)
+                }
+            }else{
+                interactor.getTodayNotes(
+                    Date().getStartDay(defaultTime),
+                    Date().getEndDay(defaultTime + range),
+                    noteType.type
+                ).consumeEach {
+                    val newState = CalendarNoteViewState(
+                        it._isLoading,
+                        it._error,
+                        NoteMapper.listApiNoteToListNote(it.data!!.toList())
+                    )
+                    setData(newState)
+                }
+            }
         }
-        val defaultTime = Calendar.getInstance().time.time
-        val flowNotes = if (noteType == NoteType.ALL) {
-            interactor.getAllNotes(
-                Date().getStartDay(defaultTime),
-                Date().getEndDay(defaultTime + range)
-            )
-        } else {
-            interactor.getTodayNotes(
-                Date().getStartDay(defaultTime),
-                Date().getEndDay(defaultTime + range),
-                noteType.type
-            )
-        }
-        dis = flowNotes
-            ?.map { it -> CalendarNoteViewState(false, null, it) }
-            ?.startWith(CalendarNoteViewState<MutableList<Note>>(true, null, null))
-            ?.onErrorReturn { CalendarNoteViewState(false, it, null) }
-            ?.subscribeBy { noteViewState ->
-                viewStateLiveData.value = noteViewState
-            }!!
-        compositeDisposable.add(dis!!)
     }
 
     fun searchNotes(searchText: String) {
-        if (searchText.length >= LENGTH_STR_TO_SEARCH) {
-            compositeDisposable.add(interactor.searchNotes("%$searchText%")
-                .map { CalendarNoteViewState(false, null, it) }
-                .startWith(CalendarNoteViewState<MutableList<Note>>(true, null, null))
-                .onErrorReturn { CalendarNoteViewState(false, it, null) }
-                .subscribeBy { noteViewState ->
-                    viewStateLiveData.value = noteViewState
-                }
-            )
+        launch {
+            val defaultTime = Calendar.getInstance().time.time
+            interactor.searchNotes("%$searchText%").consumeEach {
+                val newState = CalendarNoteViewState(
+                    it._isLoading,
+                    it._error,
+                    NoteMapper.listApiNoteToListNote(it.data!!.toList())
+                )
+                setData(newState)
+            }
+
         }
     }
 
-    fun updateNote(note: Note) {
+    suspend fun updateNote(note: Note) {
         interactor.updateNote(NoteMapper.noteToApiNote(note))
-            ?.subscribeOn(Schedulers.io())
-            ?.subscribe()
     }
 
     @VisibleForTesting
     public override fun onCleared() {
+        //notesChannel.cancel()
         super.onCleared()
-        compositeDisposable.dispose()
     }
 }
 
